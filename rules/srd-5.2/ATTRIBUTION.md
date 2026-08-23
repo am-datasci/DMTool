@@ -1,12 +1,13 @@
 # Attribution — SRD 5.2 (provisional)
 
-**This folder is a placeholder.** Per the project brief, `srd-5.2/`
-starts as a working copy of the `srd-5.1/` content so the ruleset-
-selection code path is real, with actual SRD 5.2 transcription planned
-as a follow-up. That copy has not been made yet — the folder is empty.
+**The data files here are SRD 5.1 content, copied verbatim from
+`rules/srd-5.1/` on 2026-08-23.** Per the project brief, `srd-5.2/`
+starts as a working copy so the ruleset-selection code path is real,
+with actual SRD 5.2 transcription planned as a follow-up. See
+`NOTES.md` in this folder.
 
-Because the content here will initially *be* SRD 5.1 content, the SRD
-5.1 notice below applies as-is and must be reproduced verbatim:
+Because the content here *is* SRD 5.1 content, the SRD 5.1 notice below
+applies as-is and must be reproduced verbatim:
 
 > This work includes material taken from the System Reference Document
 > 5.1 ("SRD 5.1") by Wizards of the Coast LLC and available at

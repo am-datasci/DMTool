@@ -272,6 +272,53 @@ class RulesetTests(ContentTestCase):
             self.assertNotIn("**", spells[name]["casting_time"], name)
             self.assertTrue(spells[name]["range"], name)
 
+    def test_both_rulesets_load(self):
+        for ruleset_id in ("srd-5.1", "srd-5.2"):
+            ruleset = load_ruleset(ruleset_id)
+            self.assertEqual(ruleset.id, ruleset_id)
+            self.assertEqual(len(ruleset.dc_tiers), 6)
+            self.assertEqual(ruleset.warnings, [], ruleset_id)
+
+    def test_srd_5_2_is_currently_a_copy_of_5_1(self):
+        """Phase 4 seeds 5.2 from 5.1 deliberately. When 5.2 is really
+        transcribed this will start failing, which is the point — it is
+        the signal to update NOTES.md and the attribution."""
+        first, second = load_ruleset("srd-5.1"), load_ruleset("srd-5.2")
+        self.assertEqual(len(first.spells), len(second.spells))
+        self.assertEqual(len(first.conditions), len(second.conditions))
+        self.assertEqual(len(first.bestiary), len(second.bestiary))
+
+    def test_the_manifest_ruleset_selects_the_folder_that_is_read(self):
+        """The engine must genuinely read the declared ruleset's folder.
+
+        Proven by changing the 5.2 copy and checking the change shows up,
+        which a hardcoded path to 5.1 could not do.
+        """
+        rules = self.private_rules()
+        target = rules / "srd-5.2" / "core-mechanics.yaml"
+        target.write_text(
+            target.read_text().replace("label: Nearly impossible",
+                                       "label: Basically hopeless"),
+            encoding="utf-8",
+        )
+        self.assertEqual(load_ruleset("srd-5.2").dc_tiers[-1].label, "Basically hopeless")
+        self.assertEqual(load_ruleset("srd-5.1").dc_tiers[-1].label, "Nearly impossible")
+
+    def test_an_adventure_declaring_5_2_gets_5_2(self):
+        rules = self.private_rules()
+        target = rules / "srd-5.2" / "core-mechanics.yaml"
+        target.write_text(target.read_text().replace("dc: 30", "dc: 99"), encoding="utf-8")
+
+        self.make_adventure("example")
+        manifest_path = self.root / "adventures" / "example" / "manifest.yaml"
+        manifest_path.write_text(
+            manifest_path.read_text().replace("ruleset: srd-5.1", "ruleset: srd-5.2"),
+            encoding="utf-8",
+        )
+        manifest = load_manifest(manifest_path, slug="example")
+        self.assertEqual(manifest.ruleset, "srd-5.2")
+        self.assertEqual(load_ruleset(manifest.ruleset).dc_tiers[-1].dc, 99)
+
     def test_unknown_ruleset_names_what_is_available(self):
         with self.assertRaises(ContentError) as caught:
             load_ruleset("srd-9.9")

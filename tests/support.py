@@ -58,6 +58,26 @@ class ContentTestCase(unittest.TestCase):
         )
         return target
 
+    def private_rules(self) -> Path:
+        """Swap the shared read-only rules symlink for a writable copy.
+
+        Only needed by tests that edit rules data to prove the engine is
+        really reading the folder it claims to. The spell and bestiary
+        files are stubbed out: together they are ~900KB of YAML per
+        ruleset, and re-parsing them costs seconds that these tests get
+        nothing for.
+        """
+        stubs = {"spells.yaml": "spells", "bestiary.yaml": "monsters"}
+        link = self.root / "rules"
+        link.unlink()
+        shutil.copytree(_SHARED_RULES, link,
+                        ignore=shutil.ignore_patterns(*stubs))
+        for filename, key in stubs.items():
+            for ruleset in link.iterdir():
+                if ruleset.is_dir():
+                    (ruleset / filename).write_text(f"{key}: []\n", encoding="utf-8")
+        return link
+
     def write(self, path: Path, text: str) -> Path:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding="utf-8")
