@@ -1,0 +1,47 @@
+# A monster. Same shape as an NPC's stat block, minus the roleplay fields.
+# The id is the filename without .yaml — "example-monster" — and that is
+# what scenes list under their "monsters:" field.
+#
+# Put adventure-specific creatures here. Generic ones that any adventure
+# might use belong in the shared bestiary under rules/<ruleset>/ instead.
+
+name: Ill-Tempered Boar
+
+summary: Large, fast, and extremely committed to its opinions.
+
+# How it fights. This is the field you will actually read mid-combat, so
+# keep it to a sentence or two.
+combat_behavior: Charges the nearest target immediately, then keeps
+  attacking whatever hit it last. Never retreats, which is its main
+  tactical weakness.
+
+stat_block:
+  ac: 11
+  hp: 11
+  hit_dice: 2d8 + 2
+  speed: 40 ft.
+  abilities:
+    STR: 13
+    DEX: 11
+    CON: 12
+    INT: 2
+    WIS: 9
+    CHA: 5
+  senses: passive Perception 9
+  languages: —
+  cr: 1/4
+  traits:
+    - name: Charge
+      text: If the boar moves at least 20 feet straight toward a target and
+        then hits it with a tusk attack on the same turn, that target takes
+        an extra 3 (1d6) slashing damage. If the target is a creature, it
+        must succeed on a DC 11 Strength saving throw or be knocked prone.
+    - name: Relentless
+      text: If the boar takes damage that would reduce it to 0 hit points,
+        it drops to 1 hit point instead. It can't use this trait again
+        until it finishes a short or long rest.
+  actions:
+    - name: Tusk
+      text: Melee Weapon Attack, +3 to hit, reach 5 ft., one target.
+        Hit, 4 (1d6 + 1) slashing damage.
+  reactions: []

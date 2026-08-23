@@ -1,0 +1,76 @@
+# A scene: what the DM reads out, who is there, and where play can go next.
+#
+# The scene's id is this file's name without .yaml — here, "01-example-scene".
+# Exits refer to scenes by that id. Numbering the files keeps them in a
+# sensible order in the "Other..." scene list; it does not control play order.
+
+title: The Crossroads
+
+# Read this to the players. Write it with the "|" block style below and
+# don't worry about line length — the tool re-wraps prose to fit the
+# panel, so where you break your lines doesn't matter. A blank line
+# starts a new paragraph, and lines starting with "-" or "1." stay on
+# their own line.
+read_aloud: |
+  The road forks beside a leaning signpost. One arm points north toward
+  a smudge of chimney smoke; the other points east, into trees that look
+  a good deal darker than the hour justifies.
+
+  A woman in a mud-spattered cloak is sitting on the milestone, eating
+  an apple, and watching you with frank curiosity.
+
+# Notes for the DM's eyes only. Facts, secrets, what is actually going on.
+dm_notes: |
+  Perrin has been waiting here since dawn. She knows the eastern road is
+  blocked by the boar, and she will say so if asked directly — she is not
+  hiding it, she simply assumes everyone already knows.
+
+# Guidance for off-script moments: what the people here want and how they
+# react under pressure. This is prose for the DM to improvise from, NOT a
+# list of scripted outcomes. Resist the urge to write "if the party does X,
+# then Y happens" — the DM decides that at the table.
+improv_notes: |
+  Perrin wants company more than she wants to be helpful. She warms up
+  fast to anyone who shares food or asks about her, and goes vague and
+  unhelpful with anyone who interrogates her.
+
+  If the party dithers at the fork for a long time, she gets bored and
+  offers to walk with them — which is a fine way to get a stuck group
+  moving without deciding for them.
+
+# NPCs and monsters present, by id — the filename (without .yaml) of a
+# file in npcs/ or monsters/. The tool warns at startup if an id here has
+# no matching file.
+npcs:
+  - example-npc
+
+monsters: []
+
+# Checks this scene calls for, with the DC the module sets.
+#
+# This is a flat reference list, not a decision tree. The tool shows the
+# name and the DC; you decide what success or failure means at the table.
+# Anything shaped like "if they try X, roll Y, and then Z happens" belongs
+# up in improv_notes as guidance, not down here as data.
+checks:
+  - name: Spot the fresh boar tracks on the eastern road
+    ability: Wisdom (Survival)
+    dc: 10
+    notes: On a success, the tracks are clearly heading east, and recent.
+
+# Where play can go from here. Each exit needs a "to" (a scene id) and a
+# "label" (what the DM sees in the goto menu).
+#
+# Exits can be gated on story flags, which you set during play with
+# "flag set <name>":
+#   condition: <flag>   shown only once that flag IS set
+#   unless: <flag>      hidden once that flag IS set
+# Give both and the exit needs both to be true. That is the whole of it —
+# there is deliberately no and/or/not expression language. If you need
+# richer branching, add another flag.
+exits:
+  - to: 02-example-second-scene
+    label: North, toward the village
+  - to: 02-example-second-scene
+    label: East, once Perrin has told them the road is blocked
+    condition: perrin_warned_them

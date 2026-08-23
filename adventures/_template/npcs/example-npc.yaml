@@ -1,0 +1,73 @@
+# An NPC. The id is this file's name without .yaml — "example-npc" — and
+# that is what scenes list under their "npcs:" field.
+#
+# Everything except "name" is optional. A talkative innkeeper who will
+# never fight needs a name, a motivation, and nothing else.
+
+name: Perrin Ashdown
+
+# One line, shown next to the name.
+summary: A road-warden's daughter who would rather be anywhere else.
+
+# The three fields below are what make an NPC usable at the table
+# without prep. Keep them short and concrete.
+motivation: Wants someone to talk to, and wants her father's boar problem
+  dealt with so she can go home.
+
+attitude: Friendly but bored. Warms to anyone who treats her as a person
+  rather than a signpost.
+
+combat_behavior: Will not start a fight. If one starts, she takes cover
+  behind the milestone and shouts unhelpful advice.
+
+improv_notes: |
+  Perrin is the example of an NPC who exists to unstick the party, not to
+  challenge them. If the group is floundering, she is a legitimate way to
+  nudge without railroading: she can mention the boar, offer to guide, or
+  simply ask what they are planning and let them hear themselves answer.
+
+# Stat block. Include only what you would actually need mid-session —
+# a full block for anything that might fight, a couple of lines for
+# anything that will not.
+stat_block:
+  ac: 12
+  hp: 9
+  hit_dice: 2d8
+  speed: 30 ft.
+  abilities:
+    STR: 10
+    DEX: 14
+    CON: 11
+    INT: 12
+    WIS: 13
+    CHA: 14
+  saves: {}
+  skills:
+    Insight: 3
+    Survival: 3
+  senses: passive Perception 11
+  languages: Common
+  cr: 1/8
+  traits:
+    - name: Local Knowledge
+      text: Perrin knows every path within a day's walk of the crossroads.
+  actions:
+    - name: Sling
+      text: Ranged Weapon Attack, +4 to hit, range 30/120 ft., one target.
+        Hit, 4 (1d4 + 2) bludgeoning damage.
+  reactions: []
+
+# Only for NPCs who cast. Delete this block entirely for those who don't.
+#
+# The spell list is chosen now, at authoring time, not searched for during
+# play — pick the handful this NPC would actually cast. The save DC is
+# written out as a number, and its formula sits next to it so you can see
+# where the number came from. The tool never calculates it.
+spellcasting:
+  ability: Charisma
+  save_dc: 12
+  save_dc_formula: 8 + proficiency bonus (2) + Charisma modifier (2)
+  attack_bonus: 4
+  known:
+    - Friends
+    - Charm Person

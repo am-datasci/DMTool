@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dm-tool"
+version = "0.1.0"
+description = "Terminal D&D 5e one-shot DM assistant"
+requires-python = ">=3.10"
+license = { text = "GPL-3.0-or-later" }
+dependencies = [
+    "textual>=0.60",
+    "PyYAML>=6.0",
+]
+
+[project.scripts]
+# The only command a user ever types.
+dm-tool = "engine.launcher:main"
+
+[tool.setuptools]
+packages = ["engine", "engine.models", "engine.loaders"]

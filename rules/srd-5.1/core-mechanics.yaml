@@ -1,0 +1,61 @@
+# Core mechanics — SRD 5.1
+#
+# This work includes material taken from the System Reference Document 5.1
+# ("SRD 5.1") by Wizards of the Coast LLC and available at
+# https://dnd.wizards.com/resources/systems-reference-document. The SRD 5.1
+# is licensed under the Creative Commons Attribution 4.0 International
+# License, available at
+# https://creativecommons.org/licenses/by/4.0/legalcode.
+#
+# Values below were checked against the official SRD 5.1 PDF
+# ("Typical Difficulty Classes" table, and the spell save DC formula given
+# in each spellcasting class entry). Phase 1 needs only this file; the rest
+# of the ruleset (conditions, spells, bestiary) is transcribed in phase 3.
+
+# The always-visible DC reference panel during play. Ordering is the
+# order shown on screen.
+dc_table:
+  - label: Very easy
+    dc: 5
+  - label: Easy
+    dc: 10
+  - label: Medium
+    dc: 15
+  - label: Hard
+    dc: 20
+  - label: Very hard
+    dc: 25
+  - label: Nearly impossible
+    dc: 30
+
+# Displayed next to a caster's precomputed save DC so the DM can see
+# where the number came from. The tool never evaluates this.
+save_dc_formula: "8 + proficiency bonus + spellcasting ability modifier"
+
+# What happens at 0 hit points. Transcribed from the official SRD 5.1 PDF
+# ("Instant Death", "Falling Unconscious", "Death Saving Throws",
+# "Stabilizing a Creature", "Monsters and Death").
+#
+# The tool surfaces these when a character goes down, and counts the
+# successes and failures the DM reports. It never rolls the save.
+dying:
+  death_save_dc: 10
+  successes_to_stabilize: 3
+  failures_to_die: 3
+  stabilize_check: DC 10 Wisdom (Medicine) check, as an action, to
+    administer first aid to an unconscious creature.
+  notes:
+    - Roll a d20 at the start of the creature's turn. 10 or higher
+      succeeds. Successes and failures need not be consecutive.
+    - A natural 1 counts as two failures. A natural 20 means the creature
+      regains 1 hit point.
+    - Taking any damage at 0 hit points is one failure; from a critical
+      hit, two.
+    - Damage that reduces a creature to 0 hit points kills it outright if
+      the remaining damage equals or exceeds its hit point maximum.
+    - Successes and failures reset to zero when the creature regains any
+      hit points or becomes stable.
+    - A stable creature stops making death saving throws but stays
+      unconscious, and regains 1 hit point after 1d4 hours.
+    - Most GMs have a monster die the instant it drops to 0 hit points
+      rather than making death saving throws.

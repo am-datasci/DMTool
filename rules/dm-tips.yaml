@@ -1,0 +1,78 @@
+# Generic DM technique tips.
+#
+# These are deliberately NOT per-scene and NOT per-adventure — they are
+# general technique, shown on demand with the `tips` command. Guidance
+# specific to a situation belongs in that scene's improv_notes instead.
+#
+# This file sits at the root of rules/ rather than inside a ruleset
+# folder because technique doesn't change between editions.
+#
+# Not SRD content — original advice, safe to edit freely.
+
+tips:
+  - title: When the players do something you didn't prepare for
+    text: |
+      This is the normal case, not a failure of prep. Ask yourself two
+      questions: can they just do it, and is failing interesting? If they
+      can just do it, let them — no roll. If failure would be boring or
+      would stall the session, let them do it anyway. Only call for a
+      check when both success and failure lead somewhere worth playing.
+
+  - title: Picking a DC on the spot
+    text: |
+      Use the table on the right. Most improvised checks are DC 10 if it's
+      the sort of thing a competent person manages most times, DC 15 if
+      it's genuinely difficult, DC 20 if it's a long shot. Don't agonise —
+      a DC that's slightly off does no lasting damage, and stopping to
+      calculate one kills momentum.
+
+  - title: Say yes, or roll the dice
+    text: |
+      If a player suggests something reasonable and you have no strong
+      reason to refuse, say yes. If it's a stretch but not absurd, call
+      for a roll. Save a flat "no" for things that genuinely can't happen,
+      and when you use it, explain why in the fiction rather than as a
+      rule.
+
+  - title: Failure should move things forward
+    text: |
+      "You don't find anything" ends the scene. "You find it, but you can
+      hear footsteps coming" keeps it moving. On a failed check, prefer
+      giving them the thing with a complication, or a partial answer, or
+      the same problem with less time. Nothing-happens is the one outcome
+      that makes players stop trying things.
+
+  - title: Let the players talk to each other
+    text: |
+      New players often look to the DM after every sentence. When they
+      start planning among themselves, stay quiet and let it run. If they
+      stall for a while, have an NPC ask them a direct question rather
+      than telling them what to do.
+
+  - title: Describing what they see
+    text: |
+      Two or three sentences, then stop and ask "what do you do?" Long
+      descriptions lose people, especially at a first session. If a detail
+      matters, put it last — that's the part they'll remember and act on.
+
+  - title: Running a monster's turn
+    text: |
+      Decide what the creature wants before you decide what it does. Most
+      animals fight until they're hurt and then flee. Most thugs surrender
+      when the fight is clearly lost. A creature that fights to the death
+      every time is both unrealistic and slower to run.
+
+  - title: When someone goes down
+    text: |
+      Pause and say plainly what has happened — new players often don't
+      realise that 0 hit points isn't death. Death saves are rolled at the
+      start of that character's turn, and any other character can spend an
+      action to stabilise them. Keep the tension, but make sure the table
+      knows the rules they're playing under.
+
+  - title: Keeping quieter players involved
+    text: |
+      Address them by character name and ask them something only their
+      character would notice or know. It's a lighter touch than asking
+      "what do you want to do?", which puts a shy player on the spot with
+      no material to work from.

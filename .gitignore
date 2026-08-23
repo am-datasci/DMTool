@@ -1,0 +1,36 @@
+# --- Third-party reference material: never commit ---
+# reference/ holds the purchased Wild Sheep Chase module PDF (not
+# redistributable), the official SRD PDFs (the brief says link out rather
+# than bundle them), and an unofficial community SRD conversion kept only
+# as raw material for building rules/*.yaml.
+reference/
+
+# --- Local play state ---
+# Session files are per-table state produced by the setup wizard, not
+# adventure content. The sessions/ folders themselves stay tracked.
+adventures/*/sessions/*.yaml
+adventures/*/sessions/*.yml
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/

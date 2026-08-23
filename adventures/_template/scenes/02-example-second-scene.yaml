@@ -1,0 +1,22 @@
+# A second scene, so the exits above have somewhere to lead.
+#
+# Every field except "title" is optional — this scene leaves most of them
+# out to show what a minimal scene looks like.
+
+title: The Village Gate
+
+read_aloud: |
+  The gate stands open, and has clearly stood open for years: ivy has
+  grown across the hinges. Somewhere behind the wall, a dog is losing an
+  argument with a goose.
+
+dm_notes: |
+  This is the last scene of the example. A real adventure would keep
+  going with more exits from here.
+
+monsters:
+  - example-monster
+
+# A scene with no exits is a valid ending. The DM can still jump anywhere
+# using the "Other..." option in the goto menu.
+exits: []

@@ -1,0 +1,24 @@
+# Adventure manifest — the identity of this adventure.
+#
+# "Create new adventure..." in the launcher copies this whole folder and
+# rewrites the title, slug, and ruleset lines below. If you copied the
+# folder by hand instead, edit those three yourself.
+
+# Shown in the adventure picker.
+title: Example Adventure
+
+# Folder name. Must match the folder this file sits in.
+slug: _template
+
+# Which rules reference to load, i.e. a folder name under rules/.
+ruleset: srd-5.1
+
+# One line, shown under the title in the picker.
+summary: A two-scene example showing every field the schema supports.
+
+# Free text, shown to the DM. No effect on the tool's behaviour.
+level_range: 1st level
+
+# Where play begins. Must be the id of a scene, which is its filename
+# without the .yaml extension.
+start_scene: 01-example-scene
