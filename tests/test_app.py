@@ -16,6 +16,19 @@ from engine.loaders.rules import load_ruleset
 from engine.loaders.session import load_session, new_session
 from tests.support import ContentTestCase
 
+_RULESET = None
+
+
+def shared_ruleset():
+    """Parsing 319 spells per test dominated the suite's runtime.
+
+    Nothing in the app mutates the ruleset, so one parse is reused.
+    """
+    global _RULESET
+    if _RULESET is None:
+        _RULESET = load_ruleset("srd-5.1")
+    return _RULESET
+
 
 class AppTests(ContentTestCase):
     def setUp(self) -> None:
@@ -25,7 +38,7 @@ class AppTests(ContentTestCase):
             self.root / "adventures" / "example" / "manifest.yaml", slug="example"
         )
         self.adventure = load_adventure(manifest)
-        self.ruleset = load_ruleset("srd-5.1")
+        self.ruleset = shared_ruleset()
         self.session = new_session(manifest)
 
     def _app(self) -> DMToolApp:
@@ -193,7 +206,7 @@ class CombatCommandTests(ContentTestCase):
             self.root / "adventures" / "example" / "manifest.yaml", slug="example"
         )
         self.adventure = load_adventure(manifest)
-        self.ruleset = load_ruleset("srd-5.1")
+        self.ruleset = shared_ruleset()
         self.session = new_session(manifest)
 
     def _run(self, scenario, size=(100, 30)):
@@ -497,8 +510,28 @@ class ReferenceTests(CombatCommandTests):
 
         self._run(scenario)
 
-    def test_spell_lookup_degrades_gracefully_without_the_srd_list(self):
+    def test_spell_lookup_finds_an_srd_spell(self):
         async def scenario(app, pilot):
+            app.run_command("spell Fire Bolt")
+            message = self._text(app, "#message")
+            self.assertIn("Fire Bolt", message)
+            self.assertIn("120 feet", message)
+
+        self._run(scenario)
+
+    def test_spell_lookup_suggests_on_a_typo_rather_than_guessing(self):
+        async def scenario(app, pilot):
+            app.run_command("spell firebalt")
+            labels = [label for label, _ in (app.pending.options if app.pending else [])]
+            self.assertTrue(any("Fireball" in l for l in labels), labels)
+
+        self._run(scenario)
+
+    def test_spell_lookup_degrades_gracefully_when_a_ruleset_has_no_spells(self):
+        from engine.models.rules import Ruleset
+
+        async def scenario(app, pilot):
+            app.ruleset = Ruleset(id="srd-5.2", dc_tiers=app.ruleset.dc_tiers)
             app.run_command("spell Fireball")
             self.assertIn("isn't transcribed yet", self._text(app, "#message"))
 
@@ -577,5 +610,32 @@ class LayoutTests(CombatCommandTests):
             screen = self._screen_text(app)
             self.assertIn("Very easy", screen)
             self.assertIn("Nearly impossible", screen)
+
+        self._run(scenario)
+
+
+class SpellDisplayTests(CombatCommandTests):
+    def test_a_cantrip_shows_its_level(self):
+        """Level 0 is falsy — cantrips displayed with no level at all."""
+
+        async def scenario(app, pilot):
+            app.run_command("spell Fire Bolt")
+            message = self._text(app, "#message")
+            self.assertIn("Evocation cantrip", message)
+            self.assertIn("120 feet", message)
+
+        self._run(scenario)
+
+    def test_a_levelled_spell_shows_its_level_and_school(self):
+        async def scenario(app, pilot):
+            app.run_command("spell Fireball")
+            self.assertIn("3rd-level Evocation", self._text(app, "#message"))
+
+        self._run(scenario)
+
+    def test_a_ritual_is_marked_as_one(self):
+        async def scenario(app, pilot):
+            app.run_command("spell Find Familiar")
+            self.assertIn("(ritual)", self._text(app, "#message"))
 
         self._run(scenario)

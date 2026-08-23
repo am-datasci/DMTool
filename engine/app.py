@@ -967,9 +967,26 @@ class DMToolApp(App):
             )
             return
         lines = [f"[bold]{escape(str(entry.get('name', name)))}[/bold]"]
-        for key in ("level", "school", "casting_time", "range", "components", "duration"):
+
+        # Level 0 is a cantrip — and falsy, so it needs handling of its own
+        # or every cantrip would display with no level at all.
+        level, school = entry.get("level"), entry.get("school", "")
+        if level == 0:
+            descriptor = f"{school} cantrip".strip()
+        elif level is not None:
+            suffix = {1: "st", 2: "nd", 3: "rd"}.get(level, "th")
+            descriptor = f"{level}{suffix}-level {school}".strip()
+        else:
+            descriptor = school
+        if entry.get("ritual"):
+            descriptor += " (ritual)"
+        if descriptor:
+            lines.append(f"[dim]{escape(descriptor)}[/dim]")
+
+        for key in ("casting_time", "range", "components", "duration"):
             if entry.get(key):
-                lines.append(f"[dim]{key.replace('_', ' ').title()}:[/dim] {escape(str(entry[key]))}")
+                label = key.replace("_", " ").title()
+                lines.append(f"[dim]{label}:[/dim] {escape(str(entry[key]))}")
         if entry.get("description"):
             lines.append(escape(reflow(str(entry["description"]))))
         self._markup("\n".join(lines))

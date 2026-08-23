@@ -181,10 +181,33 @@ class RulesetTests(ContentTestCase):
         self.assertEqual(dying.successes_to_stabilize, 3)
         self.assertEqual(dying.failures_to_die, 3)
 
-    def test_missing_phase_3_files_warn_rather_than_fail(self):
+    def test_missing_files_warn_rather_than_fail(self):
         ruleset = load_ruleset("srd-5.1")
-        self.assertTrue(any("spells.yaml" in w for w in ruleset.warnings))
         self.assertTrue(any("bestiary.yaml" in w for w in ruleset.warnings))
+
+    def test_spells_load_with_their_fields_intact(self):
+        spells = load_ruleset("srd-5.1").spells
+        self.assertGreater(len(spells), 300)
+        fire_bolt = spells["fire bolt"]
+        self.assertEqual(fire_bolt["level"], 0)
+        self.assertEqual(fire_bolt["school"], "Evocation")
+        self.assertEqual(fire_bolt["range"], "120 feet")
+        self.assertIn("1d10 fire damage", fire_bolt["description"])
+
+    def test_the_conversions_phantom_entries_are_absent(self):
+        """Precipitation/Temperature/Wind are Control Weather sub-tables the
+        third-party conversion wrongly promoted to top-level spells."""
+        spells = load_ruleset("srd-5.1").spells
+        for phantom in ("precipitation", "temperature", "wind"):
+            self.assertNotIn(phantom, spells)
+        self.assertIn("control weather", spells)
+
+    def test_merged_field_entries_were_split_back_apart(self):
+        """The conversion ran Range/Components into the casting time."""
+        spells = load_ruleset("srd-5.1").spells
+        for name in ("beacon of hope", "dominate person", "blade barrier"):
+            self.assertNotIn("**", spells[name]["casting_time"], name)
+            self.assertTrue(spells[name]["range"], name)
 
     def test_unknown_ruleset_names_what_is_available(self):
         with self.assertRaises(ContentError) as caught:
