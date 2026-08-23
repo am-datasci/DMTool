@@ -34,6 +34,7 @@ HELP_TEXT = """\
 Scene
   goto                     choose where to go next, from this scene's exits
   goto <scene>             go straight to a scene by its id
+  scene                    go back to the scene text from a lookup
   scenes                   list every scene in the adventure
   flag set|unset <name>    set or clear a story flag (may open up exits)
   flag list                show which flags are set
@@ -161,6 +162,10 @@ class DMToolApp(App):
         self.tips = tips or []
         self.combat = Combat.from_dict(session.combat)
         self.pending: PendingChoice | None = None
+        #: Reference material (a stat block, spell, condition) shown in the
+        #: main panel in place of the scene. A five-line message box is no
+        #: use for a stat block the DM needs mid-fight.
+        self.reference: str | None = None
 
     # -- layout ------------------------------------------------------------
 
@@ -207,7 +212,8 @@ class DMToolApp(App):
         save_session(self.session)
 
     def _render_all(self) -> None:
-        self._render_scene()
+        if self.reference is None:
+            self._render_scene()
         self._render_tracker()
 
     # -- rendering ---------------------------------------------------------
@@ -220,7 +226,17 @@ class DMToolApp(App):
             lines.append(f"  {escape(tier.label):<18}[bold]{tier.dc}[/bold]")
         self.query_one("#dc-panel", Static).update("\n".join(lines))
 
+    def _show_reference(self, title: str, markup: str) -> None:
+        """Put reference material in the main panel, which has room to
+        scroll, rather than in the message line."""
+        self.reference = markup
+        self.query_one("#scene-title", Static).update(
+            f"{escape(title)}  [dim](type 'scene' to go back)[/dim]"
+        )
+        self.query_one("#scene-body", Static).update(markup)
+
     def _render_scene(self) -> None:
+        self.reference = None
         scene = self.scene
         title_widget = self.query_one("#scene-title", Static)
         body_widget = self.query_one("#scene-body", Static)
@@ -340,6 +356,7 @@ class DMToolApp(App):
         handlers = {
             "goto": self._cmd_goto,
             "scenes": lambda _: self._offer_all_scenes(),
+            "scene": lambda _: (self._render_scene(), self._say("")),
             "flag": self._cmd_flag,
             "combat": self._cmd_combat,
             "add": self._cmd_add,
@@ -437,7 +454,10 @@ class DMToolApp(App):
             return
         self.session.current_scene = scene_id
         self._save()
-        self._render_all()
+        # Changing scene is an explicit move away from whatever was being
+        # looked up, so the scene text comes back.
+        self._render_scene()
+        self._render_tracker()
         self._say(f"Now in: {self.adventure.scenes[scene_id].title}")
 
     def _cmd_flag(self, rest: str) -> None:
@@ -497,8 +517,15 @@ class DMToolApp(App):
             self._say("Usage: combat start | combat end")
 
     def _lookup_actor(self, name: str):
-        """Find an NPC or monster by id or name, for stat blocks and hp."""
+        """Find an NPC or monster by id or name, for stat blocks and hp.
+
+        The adventure's own content wins over the shared SRD bestiary, so
+        an adventure can rebalance a generic creature without renaming it.
+        """
         candidates: dict[str, object] = {}
+        for actor in self.ruleset.bestiary.values():
+            candidates.setdefault(actor.name, actor)
+            candidates.setdefault(actor.id, actor)
         for actor in list(self.adventure.npcs.values()) + list(
             self.adventure.monsters.values()
         ):
@@ -795,7 +822,7 @@ class DMToolApp(App):
             return
         lines = [f"{prefix}[bold]{escape(condition.name)}[/bold]"]
         lines += [f"  - {escape(reflow(effect))}" for effect in condition.effects]
-        self._markup("\n".join(lines))
+        self._show_reference(condition.name, "\n".join(lines))
 
     def _list_conditions(self) -> None:
         if not self.ruleset.conditions:
@@ -816,11 +843,10 @@ class DMToolApp(App):
         if dying is None:
             self._say(f"No dying rules loaded for {self.ruleset.id}.")
             return
-        lines = ["[bold]At 0 hit points[/bold]"]
-        lines += [f"  - {escape(reflow(note))}" for note in dying.notes]
+        lines = [f"  - {escape(reflow(note))}" for note in dying.notes]
         if dying.stabilize_check:
             lines.append(f"  - {escape(reflow(dying.stabilize_check))}")
-        self._markup("\n".join(lines))
+        self._show_reference("At 0 hit points", "\n".join(lines))
 
     def _cmd_look(self, rest: str) -> None:
         if not rest:
@@ -859,12 +885,18 @@ class DMToolApp(App):
         return actors
 
     def _show_actor(self, actor_id: str) -> None:
-        actor = self.adventure.npcs.get(actor_id) or self.adventure.monsters.get(actor_id)
+        actor = (
+            self.adventure.npcs.get(actor_id)
+            or self.adventure.monsters.get(actor_id)
+            or self.ruleset.bestiary.get(actor_id)
+        )
         if actor is None:
             self._say(f"No NPC or monster with id {actor_id!r}.")
             return
 
         lines = [f"[bold]{escape(actor.name)}[/bold]"]
+        if getattr(actor, "meta", None):
+            lines.append(f"[dim]{escape(actor.meta)}[/dim]")
         if actor.summary:
             lines.append(escape(reflow(actor.summary)))
 
@@ -880,13 +912,17 @@ class DMToolApp(App):
         if block is not None:
             header = []
             if block.ac is not None:
-                header.append(f"AC {block.ac}")
+                header.append(
+                    f"AC {block.ac}" + (f" ({block.ac_note})" if block.ac_note else "")
+                )
             if block.hp is not None:
                 header.append(f"HP {block.hp}" + (f" ({block.hit_dice})" if block.hit_dice else ""))
             if block.speed:
                 header.append(f"Speed {block.speed}")
             if block.cr:
-                header.append(f"CR {block.cr}")
+                header.append(
+                    f"CR {block.cr}" + (f" ({block.xp} XP)" if block.xp else "")
+                )
             if header:
                 lines.append("  " + escape("  ".join(header)))
             if block.abilities:
@@ -894,10 +930,22 @@ class DMToolApp(App):
                     f"{name} {score}" for name, score in block.abilities.items()
                 )
                 lines.append("  " + escape(abilities))
+            for label, value in (
+                ("Saves", ", ".join(f"{k} {v:+d}" for k, v in block.saves.items())),
+                ("Skills", ", ".join(f"{k} {v:+d}" for k, v in block.skills.items())),
+                ("Senses", block.senses),
+                ("Languages", block.languages),
+            ):
+                if value:
+                    lines.append(f"  [dim]{label}:[/dim] {escape(str(value))}")
+            for label, value in block.notes.items():
+                lines.append(f"  [dim]{escape(label)}:[/dim] {escape(str(value))}")
+
             for group_name, group in (
                 ("Traits", block.traits),
                 ("Actions", block.actions),
                 ("Reactions", block.reactions),
+                ("Legendary Actions", block.legendary_actions),
             ):
                 if not group:
                     continue
@@ -919,7 +967,7 @@ class DMToolApp(App):
                 lines.append("  " + escape(", ".join(casting.known)))
                 lines.append("[dim]  'spell' lists these as a numbered menu.[/dim]")
 
-        self._markup("\n".join(lines))
+        self._show_reference(actor.name, "\n".join(lines))
 
     def _cmd_spell(self, rest: str) -> None:
         if rest:
@@ -989,7 +1037,7 @@ class DMToolApp(App):
                 lines.append(f"[dim]{label}:[/dim] {escape(str(entry[key]))}")
         if entry.get("description"):
             lines.append(escape(reflow(str(entry["description"]))))
-        self._markup("\n".join(lines))
+        self._show_reference(str(entry.get("name", name)), "\n".join(lines))
 
     # -- tips --------------------------------------------------------------
 
@@ -1006,7 +1054,7 @@ class DMToolApp(App):
         if not 0 <= index < len(self.tips):
             return
         title, text = self.tips[index]
-        self._markup(f"[bold]{escape(title)}[/bold]\n{escape(reflow(text))}")
+        self._show_reference(title, escape(reflow(text)))
 
 
 def _is_int(text: str) -> bool:

@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from engine.models.actors import Monster
+
 
 @dataclass(frozen=True)
 class DCTier:
@@ -47,5 +49,5 @@ class Ruleset:
     dying: DyingRules | None = None
     conditions: dict[str, Condition] = field(default_factory=dict)
     spells: dict[str, dict] = field(default_factory=dict)
-    bestiary: dict[str, dict] = field(default_factory=dict)
+    bestiary: dict[str, Monster] = field(default_factory=dict)
     warnings: list[str] = field(default_factory=list)

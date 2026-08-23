@@ -8,6 +8,8 @@ missing one is reported rather than fatal.
 
 from __future__ import annotations
 
+import re
+
 from pathlib import Path
 
 from engine import paths
@@ -20,6 +22,8 @@ from engine.loaders.yaml_loader import (
     require_int,
     require_str,
 )
+from engine.loaders.adventure import monster_from_mapping
+from engine.models.actors import Monster
 from engine.models.rules import Condition, DCTier, DyingRules, Ruleset
 
 CORE_MECHANICS = "core-mechanics.yaml"
@@ -95,6 +99,23 @@ def _load_keyed(path: Path, key: str) -> dict[str, dict]:
     return entries
 
 
+def slugify(name: str) -> str:
+    """Bestiary entries share one file, so their id comes from the name."""
+    return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+
+
+def _load_bestiary(path: Path, warnings: list[str]) -> dict[str, Monster]:
+    data = read_yaml(path)
+    monsters: dict[str, Monster] = {}
+    for index, raw in enumerate(as_list(data, "monsters", path)):
+        entry = as_mapping(raw, path, f"monsters[{index + 1}]")
+        monster = monster_from_mapping(
+            entry, path, slugify(require_str(entry, "name", path)), warnings
+        )
+        monsters[monster.id] = monster
+    return monsters
+
+
 def load_ruleset(ruleset_id: str) -> Ruleset:
     directory = paths.ruleset_dir(ruleset_id)
     if not directory.is_dir():
@@ -130,6 +151,8 @@ def load_ruleset(ruleset_id: str) -> Ruleset:
             continue
         if target == "conditions":
             ruleset.conditions = _load_conditions(path)
+        elif target == "bestiary":
+            ruleset.bestiary = _load_bestiary(path, ruleset.warnings)
         else:
             setattr(ruleset, target, _load_keyed(path, key))
 

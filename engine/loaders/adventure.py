@@ -56,9 +56,14 @@ NPC_FIELDS = {
     "stat_block",
     "spellcasting",
 }
-MONSTER_FIELDS = {"id", "name", "summary", "combat_behavior", "stat_block", "spellcasting"}
+MONSTER_FIELDS = {"id", "name", "meta", "summary", "combat_behavior", "stat_block",
+                  "spellcasting"}
 STAT_BLOCK_FIELDS = {
     "ac",
+    "ac_note",
+    "xp",
+    "notes",
+    "legendary_actions",
     "hp",
     "hit_dice",
     "speed",
@@ -270,6 +275,10 @@ def _load_stat_block(raw: object, path: Path, warnings: list[str]) -> StatBlock 
     )
     return StatBlock(
         ac=optional_int(data, "ac", path),
+        ac_note=optional_str(data, "ac_note", path),
+        xp=optional_int(data, "xp", path),
+        notes={str(k): str(v) for k, v in as_mapping(
+            data.get("notes"), path, "notes").items()},
         hp=optional_int(data, "hp", path),
         hit_dice=optional_str(data, "hit_dice", path),
         speed=optional_str(data, "speed", path),
@@ -282,6 +291,9 @@ def _load_stat_block(raw: object, path: Path, warnings: list[str]) -> StatBlock 
         traits=_load_traits(data.get("traits"), path, "traits"),
         actions=_load_traits(data.get("actions"), path, "actions"),
         reactions=_load_traits(data.get("reactions"), path, "reactions"),
+        legendary_actions=_load_traits(
+            data.get("legendary_actions"), path, "legendary_actions"
+        ),
     )
 
 
@@ -336,12 +348,34 @@ def load_npc(path: Path) -> tuple[NPC, list[str]]:
     return npc, warnings
 
 
+def monster_from_mapping(
+    data: dict, path: Path, monster_id: str, warnings: list[str]
+) -> Monster:
+    """Build a Monster from an already-loaded mapping.
+
+    Shared by adventure monsters (one file each) and the shared bestiary
+    (many entries in one file), so both validate identically.
+    """
+    warnings.extend(unknown_field_warnings(data, MONSTER_FIELDS, path))
+    return Monster(
+        id=monster_id,
+        name=require_str(data, "name", path),
+        meta=optional_str(data, "meta", path),
+        summary=optional_str(data, "summary", path),
+        combat_behavior=optional_str(data, "combat_behavior", path),
+        stat_block=_load_stat_block(data.get("stat_block"), path, warnings),
+        spellcasting=_load_spellcasting(data.get("spellcasting"), path, warnings),
+        source_path=path,
+    )
+
+
 def load_monster(path: Path) -> tuple[Monster, list[str]]:
     data = read_yaml(path)
     warnings = unknown_field_warnings(data, MONSTER_FIELDS, path)
     monster = Monster(
         id=_check_declared_id(data, path, "monster"),
         name=require_str(data, "name", path),
+        meta=optional_str(data, "meta", path),
         summary=optional_str(data, "summary", path),
         combat_behavior=optional_str(data, "combat_behavior", path),
         stat_block=_load_stat_block(data.get("stat_block"), path, warnings),

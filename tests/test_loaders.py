@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 
 from engine.errors import ContentError
 from engine.loaders.adventure import discover_adventures, load_adventure, load_manifest
@@ -152,9 +153,21 @@ class ExitGatingTests(unittest.TestCase):
         self.assertFalse(exit_.is_available({"has_key", "door_barred"}))
 
 
+_SHIPPED = None
+
+
+def shipped_ruleset():
+    """Parsed once — 374KB of spells and 515KB of bestiary per test was
+    dominating the suite. Nothing here mutates it."""
+    global _SHIPPED
+    if _SHIPPED is None:
+        _SHIPPED = load_ruleset("srd-5.1")
+    return _SHIPPED
+
+
 class RulesetTests(ContentTestCase):
     def test_dc_table_loads_from_the_declared_ruleset(self):
-        ruleset = load_ruleset("srd-5.1")
+        ruleset = shipped_ruleset()
         self.assertEqual(
             [(tier.label, tier.dc) for tier in ruleset.dc_tiers],
             [
@@ -169,24 +182,74 @@ class RulesetTests(ContentTestCase):
         self.assertIn("proficiency bonus", ruleset.save_dc_formula)
 
     def test_conditions_are_loaded(self):
-        ruleset = load_ruleset("srd-5.1")
+        ruleset = shipped_ruleset()
         self.assertEqual(len(ruleset.conditions), 15)
         self.assertEqual(ruleset.conditions["prone"].name, "Prone")
         self.assertTrue(ruleset.conditions["prone"].effects)
 
     def test_dying_rules_are_loaded(self):
-        dying = load_ruleset("srd-5.1").dying
+        dying = shipped_ruleset().dying
         self.assertIsNotNone(dying)
         self.assertEqual(dying.death_save_dc, 10)
         self.assertEqual(dying.successes_to_stabilize, 3)
         self.assertEqual(dying.failures_to_die, 3)
 
-    def test_missing_files_warn_rather_than_fail(self):
-        ruleset = load_ruleset("srd-5.1")
-        self.assertTrue(any("bestiary.yaml" in w for w in ruleset.warnings))
+    def test_the_shipped_ruleset_loads_without_warnings(self):
+        self.assertEqual(shipped_ruleset().warnings, [])
+
+    def test_missing_optional_files_warn_rather_than_fail(self):
+        """A ruleset with only core mechanics still loads."""
+        import os
+        import shutil
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "rules" / "bare").mkdir(parents=True)
+            shutil.copy(
+                self.root / "rules" / "srd-5.1" / "core-mechanics.yaml",
+                root / "rules" / "bare" / "core-mechanics.yaml",
+            )
+            previous = os.environ["DM_TOOL_ROOT"]
+            os.environ["DM_TOOL_ROOT"] = str(root)
+            try:
+                ruleset = load_ruleset("bare")
+            finally:
+                os.environ["DM_TOOL_ROOT"] = previous
+        self.assertTrue(ruleset.dc_tiers)
+        for expected in ("conditions.yaml", "spells.yaml", "bestiary.yaml"):
+            self.assertTrue(any(expected in w for w in ruleset.warnings), expected)
+
+    def test_the_full_bestiary_loads(self):
+        bestiary = shipped_ruleset().bestiary
+        self.assertEqual(len(bestiary), 317)
+        goblin = bestiary["goblin"]
+        self.assertEqual(goblin.stat_block.ac, 15)
+        self.assertEqual(goblin.stat_block.hp, 7)
+        self.assertEqual(goblin.stat_block.cr, "1/4")
+        self.assertEqual(goblin.stat_block.abilities["DEX"], 14)
+        self.assertTrue(any(a.name == "Scimitar" for a in goblin.stat_block.actions))
+
+    def test_acolyte_has_its_own_stats_not_the_archmages(self):
+        """dnd-5e-srd-master gives Acolyte AC 12 / HP 99 / CR 12 — the
+        Archmage's numbers, from the adjacent column of SRD page 395.
+        The printed page says AC 10, HP 9 (2d8), CR 1/4."""
+        bestiary = shipped_ruleset().bestiary
+        acolyte = bestiary["acolyte"]
+        self.assertEqual(acolyte.stat_block.ac, 10)
+        self.assertEqual(acolyte.stat_block.hp, 9)
+        self.assertEqual(acolyte.stat_block.cr, "1/4")
+        archmage = bestiary["archmage"]
+        self.assertEqual(archmage.stat_block.ac, 12)
+        self.assertEqual(archmage.stat_block.hp, 99)
+        self.assertEqual(archmage.stat_block.cr, "12")
+
+    def test_legendary_creatures_keep_their_legendary_actions(self):
+        bestiary = shipped_ruleset().bestiary
+        self.assertTrue(bestiary["adult-red-dragon"].stat_block.legendary_actions)
 
     def test_spells_load_with_their_fields_intact(self):
-        spells = load_ruleset("srd-5.1").spells
+        spells = shipped_ruleset().spells
         self.assertGreater(len(spells), 300)
         fire_bolt = spells["fire bolt"]
         self.assertEqual(fire_bolt["level"], 0)
@@ -197,14 +260,14 @@ class RulesetTests(ContentTestCase):
     def test_the_conversions_phantom_entries_are_absent(self):
         """Precipitation/Temperature/Wind are Control Weather sub-tables the
         third-party conversion wrongly promoted to top-level spells."""
-        spells = load_ruleset("srd-5.1").spells
+        spells = shipped_ruleset().spells
         for phantom in ("precipitation", "temperature", "wind"):
             self.assertNotIn(phantom, spells)
         self.assertIn("control weather", spells)
 
     def test_merged_field_entries_were_split_back_apart(self):
         """The conversion ran Range/Components into the casting time."""
-        spells = load_ruleset("srd-5.1").spells
+        spells = shipped_ruleset().spells
         for name in ("beacon of hope", "dominate person", "blade barrier"):
             self.assertNotIn("**", spells[name]["casting_time"], name)
             self.assertTrue(spells[name]["range"], name)

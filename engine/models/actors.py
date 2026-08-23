@@ -22,6 +22,8 @@ class Trait:
 @dataclass
 class StatBlock:
     ac: int | None = None
+    #: What the AC comes from, e.g. "natural armor", "leather armor, shield".
+    ac_note: str | None = None
     hp: int | None = None
     hit_dice: str | None = None
     speed: str | None = None
@@ -31,9 +33,14 @@ class StatBlock:
     senses: str | None = None
     languages: str | None = None
     cr: str | None = None
+    xp: int | None = None
+    #: Damage resistances/immunities/vulnerabilities and condition
+    #: immunities, kept as authored label -> text.
+    notes: dict[str, str] = field(default_factory=dict)
     traits: list[Trait] = field(default_factory=list)
     actions: list[Trait] = field(default_factory=list)
     reactions: list[Trait] = field(default_factory=list)
+    legendary_actions: list[Trait] = field(default_factory=list)
 
 
 @dataclass
@@ -69,6 +76,9 @@ class NPC:
 class Monster:
     id: str
     name: str
+    #: The size/type/alignment line, e.g. "Small humanoid (goblinoid),
+    #: neutral evil".
+    meta: str | None = None
     summary: str | None = None
     combat_behavior: str | None = None
     stat_block: StatBlock | None = None

@@ -435,9 +435,9 @@ class ConditionTests(CombatCommandTests):
             app.run_command("add Thora 15")
             app.run_command("cond add Thora prone")
             self.assertIn("prone", app.combat.find("Thora").conditions)
-            message = self._text(app, "#message")
-            self.assertIn("crawl", message)
-            self.assertIn("disadvantage on attack rolls", message)
+            shown = self._text(app, "#scene-body")
+            self.assertIn("crawl", shown)
+            self.assertIn("disadvantage on attack rolls", shown)
 
         self._run(scenario)
 
@@ -482,23 +482,31 @@ class ReferenceTests(CombatCommandTests):
     def test_look_shows_a_stat_block(self):
         async def scenario(app, pilot):
             app.run_command("look Ill-Tempered Boar")
-            message = self._text(app, "#message")
-            self.assertIn("AC 11", message)
-            self.assertIn("Charge", message)
+            shown = self._text(app, "#scene-body")
+            self.assertIn("AC 11", shown)
+            self.assertIn("Charge", shown)
 
         self._run(scenario)
 
     def test_look_finds_an_npc_by_id_as_well_as_name(self):
         async def scenario(app, pilot):
             app.run_command("look example-npc")
-            self.assertIn("Perrin Ashdown", self._text(app, "#message"))
+            self.assertIn("Perrin Ashdown", self._text(app, "#scene-body"))
 
         self._run(scenario)
 
-    def test_look_suggests_on_a_near_miss(self):
+    def test_a_unique_prefix_resolves_without_asking(self):
         async def scenario(app, pilot):
             app.run_command("look Perrin Ashdow")
+            self.assertIn("Perrin Ashdown", self._text(app, "#scene-body"))
+
+        self._run(scenario)
+
+    def test_look_suggests_on_a_real_typo(self):
+        async def scenario(app, pilot):
+            app.run_command("look Perrin Ashdwon")
             self.assertIn("Perrin", self._text(app, "#message"))
+            self.assertIsNone(app.reference, "a typo must not open a stat block")
 
         self._run(scenario)
 
@@ -513,9 +521,9 @@ class ReferenceTests(CombatCommandTests):
     def test_spell_lookup_finds_an_srd_spell(self):
         async def scenario(app, pilot):
             app.run_command("spell Fire Bolt")
-            message = self._text(app, "#message")
-            self.assertIn("Fire Bolt", message)
-            self.assertIn("120 feet", message)
+            shown = self._text(app, "#scene-body")
+            self.assertIn("Fire Bolt", shown)
+            self.assertIn("120 feet", shown)
 
         self._run(scenario)
 
@@ -540,7 +548,7 @@ class ReferenceTests(CombatCommandTests):
     def test_dying_rules_are_available_on_demand(self):
         async def scenario(app, pilot):
             app.run_command("dying")
-            self.assertIn("Medicine", self._text(app, "#message"))
+            self.assertIn("Medicine", self._text(app, "#scene-body"))
 
         self._run(scenario)
 
@@ -549,7 +557,7 @@ class ReferenceTests(CombatCommandTests):
             app.run_command("tips")
             self.assertEqual(len(app.pending.options), 1)
             app.run_command("1")
-            self.assertIn("Some advice", self._text(app, "#message"))
+            self.assertIn("Some advice", self._text(app, "#scene-body"))
 
         self._run(scenario)
 
@@ -620,22 +628,93 @@ class SpellDisplayTests(CombatCommandTests):
 
         async def scenario(app, pilot):
             app.run_command("spell Fire Bolt")
-            message = self._text(app, "#message")
-            self.assertIn("Evocation cantrip", message)
-            self.assertIn("120 feet", message)
+            shown = self._text(app, "#scene-body")
+            self.assertIn("Evocation cantrip", shown)
+            self.assertIn("120 feet", shown)
 
         self._run(scenario)
 
     def test_a_levelled_spell_shows_its_level_and_school(self):
         async def scenario(app, pilot):
             app.run_command("spell Fireball")
-            self.assertIn("3rd-level Evocation", self._text(app, "#message"))
+            self.assertIn("3rd-level Evocation", self._text(app, "#scene-body"))
 
         self._run(scenario)
 
     def test_a_ritual_is_marked_as_one(self):
         async def scenario(app, pilot):
             app.run_command("spell Find Familiar")
-            self.assertIn("(ritual)", self._text(app, "#message"))
+            self.assertIn("(ritual)", self._text(app, "#scene-body"))
+
+        self._run(scenario)
+
+
+class BestiaryLookupTests(CombatCommandTests):
+    def test_look_finds_a_creature_from_the_shared_bestiary(self):
+        async def scenario(app, pilot):
+            app.run_command("look Goblin")
+            shown = self._text(app, "#scene-body")
+            self.assertIn("Goblin", shown)
+            self.assertIn("AC 15", shown)
+            self.assertIn("Nimble Escape", shown)
+            self.assertIn("Scimitar", shown)
+
+        self._run(scenario)
+
+    def test_the_adventures_own_monster_wins_over_the_bestiary(self):
+        """An adventure must be able to rebalance a generic creature
+        without having to rename it."""
+
+        async def scenario(app, pilot):
+            self.adventure.monsters["example-monster"].name = "Goblin"
+            actor, _ = app._lookup_actor("Goblin")
+            self.assertEqual(actor.id, "example-monster")
+
+        self._run(scenario)
+
+    def test_adding_a_bestiary_creature_to_combat_brings_its_hit_points(self):
+        async def scenario(app, pilot):
+            app.run_command("combat start")
+            app.run_command("add Goblin 12")
+            goblin = app.combat.find("Goblin")
+            self.assertEqual((goblin.hp, goblin.max_hp), (7, 7))
+            self.assertFalse(goblin.is_pc)
+
+        self._run(scenario)
+
+
+class ReferencePanelTests(CombatCommandTests):
+    """Reference material goes in the main panel, which scrolls."""
+
+    def test_scene_command_returns_from_a_lookup(self):
+        async def scenario(app, pilot):
+            app.run_command("look Goblin")
+            self.assertIsNotNone(app.reference)
+            app.run_command("scene")
+            self.assertIsNone(app.reference)
+            self.assertIn("The Crossroads", self._text(app, "#scene-title"))
+
+        self._run(scenario)
+
+    def test_moving_scene_clears_displayed_reference_material(self):
+        async def scenario(app, pilot):
+            app.run_command("look Goblin")
+            app.run_command("goto 02-example-second-scene")
+            self.assertIsNone(app.reference)
+            self.assertIn("Village Gate", self._text(app, "#scene-title"))
+
+        self._run(scenario)
+
+    def test_combat_updates_do_not_wipe_a_stat_block_being_read(self):
+        """Looking up a monster then tracking damage must not throw the
+        stat block away mid-fight."""
+
+        async def scenario(app, pilot):
+            app.run_command("combat start")
+            app.run_command("add Goblin 12")
+            app.run_command("look Goblin")
+            app.run_command("hp Goblin -3")
+            self.assertIsNotNone(app.reference)
+            self.assertIn("Nimble Escape", self._text(app, "#scene-body"))
 
         self._run(scenario)
