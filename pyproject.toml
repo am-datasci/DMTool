@@ -6,11 +6,25 @@ build-backend = "setuptools.build_meta"
 name = "dm-tool"
 version = "0.1.0"
 description = "Terminal D&D 5e one-shot DM assistant"
+# Developed and tested on CPython 3.13. The source compiles under 3.12
+# and uses nothing newer than 3.10 syntax, but only 3.13 has actually
+# been run.
 requires-python = ">=3.10"
 license = { text = "GPL-3.0-or-later" }
+
+# Upper bounds are deliberate, not cautious boilerplate. Textual removed
+# Static.renderable between majors during this project's development and
+# broke working code, so a new major must be an explicit, tested choice
+# rather than something a future `pip install` picks up silently.
 dependencies = [
-    "textual>=0.60",
-    "PyYAML>=6.0",
+    "textual>=8.0,<9.0",
+    "PyYAML>=6.0,<7.0",
+]
+
+[project.optional-dependencies]
+# `pip install -e ".[dev]"` to get the test runner as well.
+dev = [
+    "pytest>=8.0,<10.0",
 ]
 
 [project.scripts]

@@ -13,17 +13,35 @@ in [`dm-tool-project-brief.md`](dm-tool-project-brief.md).
 > rules data, and the Wild Sheep Chase content are still to come. This
 > README gets its proper install/run section in phase 8.
 
+## Installing
+
+Needs Python 3.10 or newer (developed on 3.13). From the repo root:
+
+    python3 -m venv .venv
+    .venv/bin/python -m pip install -e .
+
+The virtual environment is deliberately not in version control — it
+contains absolute paths and platform-specific binaries, so it cannot be
+shared. `pyproject.toml` is the portable part: the command above rebuilds
+an equivalent environment on any machine.
+
+If `python3 -m venv` reports that `ensurepip` is unavailable, your
+distribution ships venv support separately — on Debian/Ubuntu that is
+`sudo apt install python3-venv`. On macOS the python.org and Homebrew
+builds both include it.
+
 ## Running it
 
-    python3.13 -m venv .venv
-    .venv/bin/python -m pip install -e .
     .venv/bin/dm-tool
 
 `dm-tool` takes no arguments — it lists the adventures it finds, offers
-to resume or start a session, and hands off into the play UI.
+to resume or start a session, and hands off into the play UI. Activate
+the environment (`source .venv/bin/activate`) if you would rather just
+type `dm-tool`.
 
-Tests need no plugins beyond pytest:
+## Tests
 
+    .venv/bin/python -m pip install -e ".[dev]"
     .venv/bin/python -m pytest tests/ -q
 
 ## Licence
