@@ -25,6 +25,18 @@ contains absolute paths and platform-specific binaries, so it cannot be
 shared. `pyproject.toml` is the portable part: the command above rebuilds
 an equivalent environment on any machine.
 
+If that install misbehaves — most likely a dependency released something
+broken since this was last tested — fall back to the exact versions known
+to work:
+
+    .venv/bin/python -m pip install -r requirements-lock.txt
+    .venv/bin/python -m pip install -e . --no-deps
+
+`requirements-lock.txt` records one known-good resolution, transitive
+dependencies included. `pyproject.toml` stays the source of truth for
+what the project actually requires; the lock file is a safety net for
+getting a second machine to match a working one.
+
 If `python3 -m venv` reports that `ensurepip` is unavailable, your
 distribution ships venv support separately — on Debian/Ubuntu that is
 `sudo apt install python3-venv`. On macOS the python.org and Homebrew

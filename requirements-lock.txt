@@ -1,0 +1,37 @@
+# Known-good dependency versions — the exact set this project was last
+# tested against, including transitive dependencies.
+#
+# This is NOT the dependency declaration. pyproject.toml is the source of
+# truth for what dm-tool needs; this file records one resolution of it
+# that is known to work, so a second person installing on a different
+# machine gets the same versions rather than whatever is newest that day.
+#
+# Normal install (preferred — picks up compatible bug fixes):
+#     pip install -e .
+#
+# Reproducing this exact set (use if the normal install misbehaves):
+#     pip install -r requirements-lock.txt
+#     pip install -e . --no-deps
+#
+# Regenerate after changing dependencies in pyproject.toml:
+#     python -m venv /tmp/lockenv
+#     /tmp/lockenv/bin/python -m pip install -e .
+#     /tmp/lockenv/bin/python -m pip freeze --exclude-editable
+#
+# Runtime dependencies only. For the test runner, see the "dev" extra in
+# pyproject.toml.
+#
+# Verified on CPython 3.13, Linux. These are version pins, not platform
+# pins — pip still selects the right wheel per platform, so the same file
+# works on macOS.
+linkify-it-py==2.1.0
+markdown-it-py==4.2.0
+mdit-py-plugins==0.6.1
+mdurl==0.1.2
+platformdirs==4.11.3
+Pygments==2.21.0
+PyYAML==6.0.3
+rich==15.0.0
+textual==8.2.8
+typing_extensions==4.16.0
+uc-micro-py==2.0.0
