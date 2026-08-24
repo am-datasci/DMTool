@@ -1,6 +1,8 @@
 # Phase 7 plan — the pre-session setup wizard
 
-Status: not started. Written 2026-08-23, after phases 1–5 landed.
+Status: not started, ready to build. Written 2026-08-23 after phases
+1–5 landed; the three design decisions below were confirmed the same
+day, so implementation can begin without reopening them.
 
 ## What it is
 
@@ -90,7 +92,7 @@ menus, defaults, and Ctrl-C/EOF. Move them into a small shared module
 or duplicating them — a circular import between the two is otherwise
 likely, since the launcher has to call the wizard.
 
-## Open questions
+## Decisions (confirmed 2026-08-23)
 
 1. **Class entry: free text, or a fixed list?** There is no class data in
    `rules/`, and hardcoding the SRD class names into `engine/` would put
@@ -98,8 +100,9 @@ likely, since the launcher has to call the wizard.
    respects that, at the cost of no validation and no typo protection.
    The alternative is a `rules/<ruleset>/classes.yaml` listing names only,
    which would also give the wizard something to fuzzy-match against.
-   *Recommendation: free text now; add the data file only if it proves
-   annoying in practice.*
+   **Confirmed: free text.** No class data file for now. Add
+   `rules/<ruleset>/classes.yaml` later only if typos prove annoying in
+   practice — and if so, names only, so it stays data rather than code.
 
 2. **Should the spell list be filtered by class?** We have all 319 spells
    but no class→spell mapping — the SRD's class spell lists exist in both
@@ -107,12 +110,15 @@ likely, since the launcher has to call the wizard.
    319 is simpler and never wrongly rejects a valid spell; filtering would
    catch a player who names a spell their class cannot cast, which is
    arguably their sheet's problem, not the tool's.
-   *Recommendation: match against all 319.*
+   **Confirmed: match against all 319, unfiltered.** Rejecting a spell a
+   player actually has on their sheet, mid-setup, is a worse failure than
+   accepting one their class cannot cast.
 
 3. **Editing a session after setup.** The review step covers typos during
    setup, but not "we added a player in week two". Simplest answer is that
    the session YAML is hand-editable and documented as such in phase 8.
-   *Recommendation: no in-app editing; document the file.*
+   **Confirmed: no in-app editing.** The session YAML is hand-editable;
+   phase 8 documents how, including adding a player mid-campaign.
 
 ## Tests
 
