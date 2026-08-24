@@ -51,6 +51,15 @@ to resume or start a session, and hands off into the play UI. Activate
 the environment (`source .venv/bin/activate`) if you would rather just
 type `dm-tool`.
 
+## Documentation
+
+- [`docs/running-a-session.md`](docs/running-a-session.md) — how to use
+  the tool at the table, with a full command reference. Start here.
+- [`docs/transcribing-a-pdf-adventure.md`](docs/transcribing-a-pdf-adventure.md)
+  — converting a new one-shot into the schema.
+- [`docs/phase-7-plan.md`](docs/phase-7-plan.md) — design notes for the
+  setup wizard.
+
 ## Tests
 
     .venv/bin/python -m pip install -e ".[dev]"
