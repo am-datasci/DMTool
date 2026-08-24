@@ -30,40 +30,165 @@ from engine.models.session import Session
 
 OTHER_OPTION = "Other... (any scene in the adventure)"
 
-HELP_TEXT = """\
-Scene
-  goto                     choose where to go next, from this scene's exits
-  goto <scene>             go straight to a scene by its id
-  scene                    go back to the scene text from a lookup
-  scenes                   list every scene in the adventure
-  flag set|unset <name>    set or clear a story flag (may open up exits)
-  flag list                show which flags are set
+@dataclass(frozen=True)
+class CommandHelp:
+    """One command's entry in the help system.
 
-Combat
-  combat start|end         begin or end the encounter
-  add <name> [initiative]  add a combatant (known creatures bring their hp)
-  init <name> <n>          set someone's initiative
-  next / back              move the turn marker
-  hp <name> -5             apply damage or healing you have already rolled
-  down <name>              they are at 0 hit points, start death saves
-  save <name> ok|fail|nat20|nat1
-  stable <name>            they have been stabilised
-  up <name> [hp]           back on their feet
+    Held as data rather than one prose block so `help` can be browsed by
+    topic, drilled into per command, and fuzzy-matched when someone
+    mistypes — a flat wall of text does none of those, and there are now
+    too many commands to scan in a small panel mid-session.
+    """
 
-Reference
-  cond add <name> <condition>      apply a condition and show what it does
-  cond remove <name> <condition>
-  cond <name>                      list a combatant's conditions
-  conditions                       list every SRD condition
-  look <name>                      stat block for an NPC or monster
-  spell [name]                     spells known by casters here, or look one up
-  tips                             general DM technique tips
-  dying                            what happens at 0 hit points
+    name: str
+    topic: str
+    usage: str
+    summary: str
+    detail: str = ""
+    examples: tuple[str, ...] = ()
 
-  help / quit
 
-When a numbered list is showing, just type the number.
-"""
+TOPICS = ("Getting around", "Combat", "Reference", "Session")
+
+COMMANDS: tuple[CommandHelp, ...] = (
+    CommandHelp(
+        "goto", "Getting around", "goto [scene]",
+        "Move the party to another scene.",
+        "With no scene name it lists this scene's exits as a numbered menu, "
+        "hiding any whose flag condition is not met, and adds an "
+        "\"Other...\" entry that offers every scene in the adventure. That "
+        "fallback is there for when play diverges from the written route.",
+        ("goto", "goto 03-after-the-dust"),
+    ),
+    CommandHelp(
+        "scenes", "Getting around", "scenes",
+        "List every scene, and jump to one by number.",
+        "Unfiltered — ignores flag conditions entirely.",
+    ),
+    CommandHelp(
+        "scene", "Getting around", "scene",
+        "Redraw the current scene and clear the panel below.",
+        "Useful once a long help entry or stat block has filled the lower "
+        "panel and you want the table's attention back on the scene text.",
+    ),
+    CommandHelp(
+        "flag", "Getting around", "flag set|unset|list <name>",
+        "Set or clear a story flag.",
+        "Flags are how the adventure branches. Setting one can make new "
+        "exits appear in goto; clearing it hides them again. Nothing else "
+        "changes them — the tool never sets a flag on its own.",
+        ("flag set sheep_taken", "flag unset sheep_taken", "flag list"),
+    ),
+    CommandHelp(
+        "combat", "Combat", "combat start|end",
+        "Begin or clear the encounter.",
+        "Starting swaps the sidebar from who is present to the initiative "
+        "tracker. Ending clears the tracker completely.",
+    ),
+    CommandHelp(
+        "add", "Combat", "add <name> [initiative]",
+        "Put someone in the initiative order.",
+        "A name matching an NPC or monster in this adventure brings its "
+        "stat block and hit points with it. Anything else is treated as a "
+        "player character, with no hit points tracked — the paper sheet "
+        "stays authoritative.",
+        ("add Guz 14", "add Thora 18"),
+    ),
+    CommandHelp(
+        "init", "Combat", "init <name> <number>",
+        "Set or correct someone's initiative.",
+    ),
+    CommandHelp(
+        "next", "Combat", "next",
+        "Advance to the next turn, rolling the round over.",
+        "Reminds you when a downed character owes a death saving throw.",
+    ),
+    CommandHelp(
+        "back", "Combat", "back",
+        "Step the turn marker backwards, for when a turn was missed.",
+    ),
+    CommandHelp(
+        "hp", "Combat", "hp <name> <change>",
+        "Apply damage or healing you have already rolled.",
+        "Monsters and NPCs only. Player hit points are not tracked; use "
+        "down when a character reaches 0.",
+        ("hp Guz -7", "hp Guz +3"),
+    ),
+    CommandHelp(
+        "down", "Combat", "down <name>",
+        "Mark a character as at 0 hit points.",
+        "Applies the unconscious condition and prints the death saving "
+        "throw rules, then tracks successes and failures as you report "
+        "them with save.",
+    ),
+    CommandHelp(
+        "save", "Combat", "save <name> ok|fail|nat20|nat1",
+        "Record a death saving throw you have rolled.",
+        "Three successes stabilises; three failures kills. A natural 1 "
+        "counts as two failures; a natural 20 puts them back up on 1 hit "
+        "point. The tool never rolls the die.",
+        ("save Thora ok", "save Thora nat1"),
+    ),
+    CommandHelp(
+        "stable", "Combat", "stable <name>",
+        "Mark someone stabilised, e.g. by a Medicine check.",
+    ),
+    CommandHelp(
+        "up", "Combat", "up <name> [hp]",
+        "Put someone back on their feet, clearing death saves.",
+    ),
+    CommandHelp(
+        "cond", "Reference", "cond add|remove <name> <condition>",
+        "Apply or clear a condition, and show what it does.",
+        "Applying prints the condition's full SRD text straight away, so "
+        "you do not have to remember what restrained means mid-fight. "
+        "Giving just a name lists what that combatant currently has. The "
+        "condition is the last word, so names with spaces work.",
+        ("cond add Ill-Tempered Boar prone", "cond remove Guz poisoned", "cond Guz"),
+    ),
+    CommandHelp(
+        "conditions", "Reference", "conditions",
+        "List all 15 SRD conditions, and read any of them.",
+    ),
+    CommandHelp(
+        "look", "Reference", "look [name]",
+        "Show an NPC or monster's stat block.",
+        "With no name it offers everyone in the current scene. Includes "
+        "what the creature wants and how it behaves in a fight, not just "
+        "its numbers.",
+        ("look Guz", "look"),
+    ),
+    CommandHelp(
+        "spell", "Reference", "spell [name]",
+        "Look up a spell, or list what casters here know.",
+        "With no name it lists the preselected spells of any caster in "
+        "this scene. With a name it searches all 319 SRD spells, offering "
+        "close matches rather than guessing.",
+        ("spell Fire Bolt", "spell"),
+    ),
+    CommandHelp(
+        "dying", "Reference", "dying",
+        "What happens at 0 hit points, per the SRD.",
+    ),
+    CommandHelp(
+        "tips", "Reference", "tips",
+        "General DM technique — improvising, DCs, pacing.",
+        "Not adventure-specific. For guidance about this scene, read its "
+        "own notes in the main panel.",
+    ),
+    CommandHelp(
+        "help", "Session", "help [command]",
+        "This menu, or detail on one command.",
+        examples=("help goto", "help cond"),
+    ),
+    CommandHelp(
+        "quit", "Session", "quit",
+        "Save and exit. Ctrl+Q does the same.",
+    ),
+)
+
+COMMANDS_BY_NAME = {command.name: command for command in COMMANDS}
+
 
 #: A line starting a list keeps its own break when text is reflowed.
 _LIST_MARKER = re.compile(r"^\s*([-*+]\s|\d+[.)]\s)")
@@ -140,6 +265,9 @@ class DMToolApp(App):
     #tracker { height: auto; }
     #dc-panel { height: 8; border-top: solid $panel; }
     #message-scroll { height: auto; max-height: 4; padding: 0 1; }
+    /* Help is far longer than a status line; let it borrow the space and
+       give it back on the next command. */
+    #message-scroll.expanded { max-height: 18; }
     #message { height: auto; color: $warning; }
     #command { dock: bottom; }
     """
@@ -201,10 +329,17 @@ class DMToolApp(App):
         return self.adventure.scene(self.session.current_scene)
 
     def _say(self, message: str) -> None:
+        self.query_one("#message-scroll").remove_class("expanded")
         self.query_one("#message", Static).update(escape(message))
 
     def _markup(self, message: str) -> None:
         """Write a message that already contains intentional markup."""
+        self.query_one("#message-scroll").remove_class("expanded")
+        self.query_one("#message", Static).update(message)
+
+    def _say_long(self, message: str) -> None:
+        """Write markup that needs room — help, mainly."""
+        self.query_one("#message-scroll").add_class("expanded")
         self.query_one("#message", Static).update(message)
 
     def _save(self) -> None:
@@ -353,7 +488,21 @@ class DMToolApp(App):
         rest = rest.strip()
         self.pending = None
 
-        handlers = {
+        handlers = self._handlers()
+        if word in {"quit", "exit", "q"}:
+            self._save()
+            self.exit()
+            return
+        handler = handlers.get(word)
+        if handler is None:
+            self._unknown_command(word, command)
+            return
+        handler(rest)
+
+    def _handlers(self) -> dict:
+        """Command name -> handler. Also the source of truth for what
+        `help` must document; a test asserts the two agree."""
+        return {
             "goto": self._cmd_goto,
             "scenes": lambda _: self._offer_all_scenes(),
             "scene": lambda _: (self._render_scene(), self._say("")),
@@ -374,18 +523,12 @@ class DMToolApp(App):
             "spell": self._cmd_spell,
             "tips": lambda _: self._offer_tips(),
             "dying": lambda _: self._show_dying(),
-            "help": lambda _: self._say(HELP_TEXT),
+            "help": self._cmd_help,
         }
 
-        if word in {"quit", "exit", "q"}:
-            self._save()
-            self.exit()
-            return
-        handler = handlers.get(word)
-        if handler is None:
-            self._say(f"Unknown command: {command!r}. Type 'help' for the list.")
-            return
-        handler(rest)
+    def command_names(self) -> set[str]:
+        """Every command a user can type, aliases excluded."""
+        return set(self._handlers()) | {"quit"}
 
     # -- numbered menus ----------------------------------------------------
 
@@ -395,7 +538,9 @@ class DMToolApp(App):
         for index, (label, _) in enumerate(options, start=1):
             lines.append(f"  {index}. {label}")
         lines += ["", "Type a number, or anything else to cancel."]
-        self._say("\n".join(lines))
+        # Menus can be long — `conditions` alone offers 15 — so they get
+        # the expanded panel rather than a four-line slot.
+        self._say_long(escape("\n".join(lines)))
 
     def _resolve_choice(self, number: int) -> None:
         pending = self.pending
@@ -419,6 +564,10 @@ class DMToolApp(App):
             self._show_actor(value)
         elif kind == "condition":
             self._show_condition(value)
+        elif kind == "help-topic":
+            self._show_help_topic(value)
+        elif kind == "help-command":
+            self._show_command_help(value)
 
     # -- scene navigation --------------------------------------------------
 
@@ -1038,6 +1187,86 @@ class DMToolApp(App):
         if entry.get("description"):
             lines.append(escape(reflow(str(entry["description"]))))
         self._show_reference(str(entry.get("name", name)), "\n".join(lines))
+
+    # -- help --------------------------------------------------------------
+
+    def _cmd_help(self, rest: str) -> None:
+        """`help` opens the topic menu; `help <command>` drills in."""
+        if not rest:
+            self._offer(
+                "Help — pick a topic:",
+                [(topic, ("help-topic", topic)) for topic in TOPICS]
+                + [("Every command at once", ("help-topic", "*"))],
+            )
+            return
+
+        wanted = rest.split()[0].lower()
+        if wanted in COMMANDS_BY_NAME:
+            self._show_command_help(wanted)
+            return
+
+        match = matching.find(wanted, [c.name for c in COMMANDS])
+        if match.exact:
+            self._show_command_help(match.exact)
+        elif match.has_suggestions:
+            self._offer(
+                f"No command called {wanted!r}. Did you mean:",
+                [(name, ("help-command", name)) for name in match.suggestions],
+            )
+        else:
+            self._say(f"No command called {wanted!r}. Type 'help' for the list.")
+
+    def _show_help_topic(self, topic: str) -> None:
+        commands = [c for c in COMMANDS if topic == "*" or c.topic == topic]
+        heading = "Every command" if topic == "*" else topic
+        lines = [f"[bold]{escape(heading)}[/bold]"]
+        current = None
+        for command in commands:
+            if topic == "*" and command.topic != current:
+                current = command.topic
+                lines.append(f"\n[dim]{escape(current)}[/dim]")
+            lines.append(
+                f"  [bold]{escape(command.usage)}[/bold]"
+                f"  [dim]{escape(command.summary)}[/dim]"
+            )
+        lines.append("\n[dim]'help <command>' for more on any of these.[/dim]")
+        self._say_long("\n".join(lines))
+
+    def _show_command_help(self, name: str) -> None:
+        command = COMMANDS_BY_NAME.get(name)
+        if command is None:
+            self._say(f"No command called {name!r}.")
+            return
+        lines = [
+            f"[bold]{escape(command.usage)}[/bold]",
+            f"[dim]{escape(command.topic)}[/dim]",
+            "",
+            escape(command.summary),
+        ]
+        if command.detail:
+            lines += ["", escape(reflow(command.detail))]
+        if command.examples:
+            lines.append("")
+            lines.append("[dim]Examples[/dim]")
+            lines += [f"  {escape(example)}" for example in command.examples]
+        self._say_long("\n".join(lines))
+
+    def _unknown_command(self, word: str, typed: str) -> None:
+        """Suggest rather than just refusing — the DM is mid-session."""
+        match = matching.find(word, [c.name for c in COMMANDS])
+        if match.exact:
+            command = COMMANDS_BY_NAME[match.exact]
+            self._say(
+                f"No command {word!r}. Did you mean {match.exact}?  "
+                f"{command.usage} — {command.summary}"
+            )
+        elif match.has_suggestions:
+            self._offer(
+                f"No command called {word!r}. Did you mean:",
+                [(n, ("help-command", n)) for n in match.suggestions],
+            )
+        else:
+            self._say(f"Unknown command: {typed!r}. Type 'help' for the list.")
 
     # -- tips --------------------------------------------------------------
 

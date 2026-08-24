@@ -718,3 +718,111 @@ class ReferencePanelTests(CombatCommandTests):
             self.assertIn("Nimble Escape", self._text(app, "#scene-body"))
 
         self._run(scenario)
+
+
+class HelpTests(CombatCommandTests):
+    """`help` is what a first-time DM reaches for mid-session."""
+
+    def test_help_opens_a_topic_menu(self):
+        async def scenario(app, pilot):
+            app.run_command("help")
+            labels = [label for label, _ in app.pending.options]
+            self.assertIn("Combat", labels)
+            self.assertIn("Reference", labels)
+            self.assertIn("Every command at once", labels)
+
+        self._run(scenario)
+
+    def test_a_topic_lists_only_its_own_commands(self):
+        async def scenario(app, pilot):
+            app.run_command("help")
+            labels = [label for label, _ in app.pending.options]
+            app.run_command(str(labels.index("Combat") + 1))
+            message = self._text(app, "#message")
+            self.assertIn("combat start|end", message)
+            self.assertIn("save <name>", message)
+            self.assertNotIn("tips", message, "tips belongs to Reference")
+
+        self._run(scenario)
+
+    def test_every_command_at_once_covers_all_topics(self):
+        from engine.app import COMMANDS
+
+        async def scenario(app, pilot):
+            app.run_command("help")
+            labels = [label for label, _ in app.pending.options]
+            app.run_command(str(labels.index("Every command at once") + 1))
+            message = self._text(app, "#message")
+            for command in COMMANDS:
+                self.assertIn(command.name, message, command.name)
+
+        self._run(scenario)
+
+    def test_help_for_one_command_shows_usage_detail_and_examples(self):
+        async def scenario(app, pilot):
+            app.run_command("help cond")
+            message = self._text(app, "#message")
+            self.assertIn("cond add|remove", message)
+            self.assertIn("names with spaces work", message)
+            self.assertIn("cond add Ill-Tempered Boar prone", message)
+
+        self._run(scenario)
+
+    def test_help_for_a_mistyped_command_suggests(self):
+        async def scenario(app, pilot):
+            app.run_command("help condtion")
+            labels = [l for l, _ in (app.pending.options or [])]
+            self.assertTrue(any("cond" in l for l in labels), labels)
+
+        self._run(scenario)
+
+    def test_a_mistyped_command_is_suggested_not_just_refused(self):
+        async def scenario(app, pilot):
+            app.run_command("combt start")
+            self.assertIn("combat", self._text(app, "#message"))
+
+        self._run(scenario)
+
+    def test_genuine_nonsense_still_falls_back_to_help(self):
+        async def scenario(app, pilot):
+            app.run_command("frobnicate the goat")
+            self.assertIn("Unknown command", self._text(app, "#message"))
+
+        self._run(scenario)
+
+    def test_help_expands_the_panel_and_the_next_message_collapses_it(self):
+        """Help needs room; a status line must not keep it."""
+
+        async def scenario(app, pilot):
+            app.run_command("help goto")
+            self.assertIn("expanded", app.query_one("#message-scroll").classes)
+            app.run_command("flag list")
+            self.assertNotIn("expanded", app.query_one("#message-scroll").classes)
+
+        self._run(scenario)
+
+    def test_a_long_menu_gets_room_to_show_every_option(self):
+        """The conditions menu offers 15; it used to be cut off at four."""
+
+        async def scenario(app, pilot):
+            app.run_command("conditions")
+            self.assertEqual(len(app.pending.options), 15)
+            self.assertIn("expanded", app.query_one("#message-scroll").classes)
+
+        self._run(scenario)
+
+    def test_every_dispatchable_command_has_a_help_entry(self):
+        """Guards against a command being added without documenting it."""
+        from engine.app import COMMANDS_BY_NAME
+
+        async def scenario(app, pilot):
+            dispatched = set(app.command_names())
+            documented = set(COMMANDS_BY_NAME)
+            self.assertEqual(
+                dispatched - documented, set(), "commands with no help entry"
+            )
+            self.assertEqual(
+                documented - dispatched, set(), "help entries for no command"
+            )
+
+        self._run(scenario)
