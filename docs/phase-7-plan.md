@@ -1,8 +1,9 @@
 # Phase 7 plan — the pre-session setup wizard
 
-Status: not started, ready to build. Written 2026-08-23 after phases
-1–5 landed; the three design decisions below were confirmed the same
-day, so implementation can begin without reopening them.
+Status: **implemented 2026-08-24** in `engine/setup_wizard.py`, with the
+shared prompt helpers in `engine/prompts.py`. Written 2026-08-23 after
+phases 1–5 landed; the three design decisions below were confirmed and
+then built as described. Kept as the record of why it works this way.
 
 ## What it is
 

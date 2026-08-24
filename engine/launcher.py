@@ -19,48 +19,15 @@ from engine import paths
 from engine.errors import ContentError
 from engine.loaders.adventure import discover_adventures, load_adventure, load_manifest
 from engine.loaders.rules import load_dm_tips, load_ruleset
-from engine.loaders.session import list_sessions, load_session, new_session
+from engine.loaders.session import list_sessions, load_session
+from engine import setup_wizard
 from engine.models.adventure import Manifest
+from engine.models.rules import Ruleset
 from engine.models.session import Session
+from engine.prompts import ask_text, choose
 
 CREATE_NEW = "Create new adventure..."
 QUIT = "Quit"
-
-
-# --------------------------------------------------------------------------
-# Prompting
-# --------------------------------------------------------------------------
-
-
-def _prompt(message: str) -> str:
-    try:
-        return input(message).strip()
-    except (EOFError, KeyboardInterrupt):
-        print()
-        raise SystemExit(0) from None
-
-
-def choose(title: str, options: list[str]) -> int:
-    """Show a numbered menu and return the chosen index."""
-    print(f"\n{title}")
-    for index, option in enumerate(options, start=1):
-        print(f"  {index}. {option}")
-    while True:
-        answer = _prompt("\nChoice: ")
-        if answer.isdigit() and 1 <= int(answer) <= len(options):
-            return int(answer) - 1
-        print(f"Please enter a number from 1 to {len(options)}.")
-
-
-def ask_text(message: str, *, default: str | None = None) -> str:
-    suffix = f" [{default}]" if default else ""
-    while True:
-        answer = _prompt(f"{message}{suffix}: ")
-        if answer:
-            return answer
-        if default is not None:
-            return default
-        print("Please enter a value.")
 
 
 def report_problems(problems: list[str]) -> None:
@@ -168,15 +135,11 @@ def create_adventure() -> Manifest | None:
 # --------------------------------------------------------------------------
 
 
-def choose_session(manifest: Manifest) -> Session:
-    """Resume an existing session or start a fresh one.
-
-    Starting fresh writes a session with no player characters recorded —
-    the setup wizard that collects those arrives in a later phase.
-    """
+def choose_session(manifest: Manifest, ruleset: Ruleset) -> Session:
+    """Resume an existing session, or run the setup wizard for a fresh one."""
     sessions = list_sessions(manifest.slug)
     if not sessions:
-        return new_session(manifest)
+        return setup_wizard.run(manifest, ruleset)
 
     most_recent = sessions[0]
     print(f"\nFound an existing session for {manifest.title} ({most_recent.name}).")
@@ -188,7 +151,7 @@ def choose_session(manifest: Manifest) -> Session:
     if index == 0:
         return load_session(most_recent)
     if index == 1:
-        return new_session(manifest)
+        return setup_wizard.run(manifest, ruleset)
 
     pick = choose("Which session?", [path.name for path in sessions])
     return load_session(sessions[pick])
@@ -245,7 +208,7 @@ def main() -> int:
         report_warnings(ruleset.warnings, heading=f"Ruleset notes ({ruleset.id}):")
         tips = load_dm_tips()
 
-        session = choose_session(manifest)
+        session = choose_session(manifest, ruleset)
         if session.current_scene not in adventure.scenes:
             print(
                 f"\n! Session points at scene '{session.current_scene}', which no "
