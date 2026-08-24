@@ -340,6 +340,12 @@ dm-tool/
 
 ## Phased Plan
 
+> **Revised order (2026-08-23):** phase 6 (player maps) is deferred to
+> after phase 8 — see its entry below. Everything else runs in the order
+> written. Phase numbers are left as they are rather than renumbered,
+> because commit messages and `docs/phase-7-plan.md` already refer to
+> them.
+
 ### Phase 1 — Engine skeleton & launcher
 - Project scaffolding per the directory layout above.
 - YAML loaders + data models for scenes, NPCs, monsters, adventures,
@@ -412,9 +418,17 @@ dm-tool/
     entries — this level of NPC clarity is exactly what makes
     `improv_notes` useful at the table.
 
-### Phase 6 — Player maps
+### Phase 6 — Player maps — DEFERRED, run after phase 8
 - Extract/clean map assets from the source PDF into player-safe
   versions, export as PDF.
+- **Deferred to last.** Two reasons. Nothing else depends on it, so it is
+  the cheapest thing to hold; and A Wild Sheep Chase appears to contain no
+  maps at all — Noke's compound is described only in prose (three woven
+  oak platforms at 10, 20 and 30 feet, two huts, an outhouse). If that is
+  right there is nothing to extract, and the open question becomes whether
+  to draw a player-safe map of the compound from the description instead,
+  since the vertical layout is the hardest thing in the adventure to
+  convey verbally. Settle that when the phase comes up.
 
 ### Phase 6a — Pregenerated characters (prep task, not a tool feature)
 - Character creation is explicitly **out of scope for the tool itself**
