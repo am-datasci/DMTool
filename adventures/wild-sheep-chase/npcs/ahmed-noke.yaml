@@ -1,0 +1,93 @@
+# Ahmed Noke — the apprentice who stole the wand.
+#
+# REBALANCED FOR 1ST LEVEL. As written he is CR 2, HP 55, a 7th-level
+# caster with Haste, Slow and Polymorph, spell save DC 14. Against 1st-level
+# characters Slow alone ends the fight.
+#
+# Changes: HP 55 -> 22, save DC 14 -> 12, attack +6 -> +4. Spell list cut to
+# cantrips plus three 1st-level and one 2nd-level spell. Enlarge/Reduce is
+# kept on purpose — "offensively weak but buffs his allies hard" is his
+# whole identity in the fight, and losing it would make him just another
+# low-damage caster.
+
+name: Ahmed Noke
+summary: A paranoid, sleepless transmuter wearing his old master's success.
+
+motivation: Reclaim or kill Finethir, and hold on to the power the wand
+  bought him. He will not give up the wand under any circumstances.
+
+attitude: Paranoid to the point of physical tics, having barely slept in
+  months. Distrustful of the party, whom he reads as expendable meddlers.
+  Boastful in a disjointed way — he wants very badly to be admired, and
+  cannot stop performing even while threatening people.
+
+combat_behavior: Opens by casting Enlarge/Reduce on the brown bear if it is
+  present, then keeps concentration on it and plinks with Ray of Frost. He
+  stays behind his guards. When the fight turns, or any character closes to
+  melee, he casts Expeditious Retreat, flees into the central platform and
+  locks the door. Three rounds later he bursts through the roof riding the
+  bed dragon.
+
+improv_notes: |
+  He served Finethir for decades and was treated like a child the whole
+  time — expected to cook, clean and recite by rote, told that this was
+  simply how one was taught. He is human. He said so. Finethir did not
+  register it.
+
+  He is right that much of Finethir's reputation came from the wand rather
+  than the talent. Let him say so. He is not wrong, only monstrous about it.
+
+  Guz is the one person exempt from his paranoia. He will ask whether the
+  party killed "my man, Guz," and be genuinely upset if they did — this is
+  the moment that makes him a person rather than a boss.
+
+  He is open to negotiation before the fight starts, if nobody who escaped
+  the first fight is present to identify the party and they do not arrive
+  weapons drawn.
+
+  If the party try to lure him away from his home, it takes a very devious
+  plan, very good lying and some luck — his vanity slightly outweighs his
+  fear, but only slightly.
+
+stat_block:
+  ac: 12
+  hp: 22
+  hit_dice: 4d8 + 4
+  speed: 30 ft.
+  abilities:
+    STR: 9
+    DEX: 14
+    CON: 12
+    INT: 16
+    WIS: 12
+    CHA: 10
+  saves:
+    INT: 4
+    WIS: 3
+  skills:
+    Arcana: 5
+  senses: passive Perception 11
+  languages: Common, Elven, Draconic
+  cr: 1
+  traits: []
+  actions:
+    - name: Dagger
+      text: "Melee or Ranged Weapon Attack: +4 to hit, reach 5 ft. or range
+        20/60 ft., one target. Hit: 4 (1d4 + 2) piercing damage."
+  reactions: []
+
+spellcasting:
+  ability: Intelligence
+  save_dc: 12
+  save_dc_formula: 8 + proficiency bonus (2) + Intelligence modifier (3),
+    reduced from the module's DC 14 for 1st-level play
+  attack_bonus: 4
+  known:
+    - Ray of Frost
+    - Mending
+    - Prestidigitation
+    - Message
+    - Expeditious Retreat
+    - Thunderwave
+    - Jump
+    - Enlarge/Reduce

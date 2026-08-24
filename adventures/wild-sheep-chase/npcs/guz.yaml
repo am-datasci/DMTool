@@ -1,0 +1,77 @@
+# Guz — Noke's henchman.
+#
+# REBALANCED FOR 1ST LEVEL. As written he is CR 2: AC 14, HP 67, and a
+# greatsword hitting TWO separate targets for 10 (2d6+3) each. That damage
+# kills an average 1st-level character outright, twice per turn.
+#
+# Changes: HP 67 -> 22, attack +5 -> +4, damage 2d6+3 against two targets
+# -> 1d10+2 against one. Reckless is kept deliberately: it hands new
+# players an obvious tactical lever, and telegraphs that attacking him back
+# is rewarded.
+
+name: Guz
+summary: A hulking half-orc who solves problems by hitting them, loyally.
+
+motivation: Retrieve the sheep for Noke. That is the whole of it — he has
+  no quarrel with the party unless they get between him and the sheep.
+
+attitude: Violence and intimidation are, to Guz, the obvious tools for any
+  job, and he assumes everyone else thinks so too, which is why he prefers
+  to get his own violence in first. Easily confused by quick talkers, which
+  mostly makes him angrier. Fond of long words he has picked up from Noke
+  and does not reliably understand.
+
+combat_behavior: Charges the front line and goes for whoever looks
+  toughest. He wants to grab the sheep and leave, not to kill anyone. At
+  half health (11 hp or below) he disengages and flees with the bear, to
+  reappear at Noke's house — set the flag guz_fled if he gets away.
+
+improv_notes: |
+  He is genuinely loyal to Noke, who never cared what he looked like on the
+  outside, and owes him everything. He is not evil, and playing him as a
+  thug the party is glad to kill wastes him.
+
+  He is a handyman, groundsman, bodyguard and artist. He carries a
+  paint-flecked key to his studio in one of the huts at Noke's place. His
+  art is genuinely dreadful. Noke encourages him anyway. Finethir used to
+  ridicule it constantly, which is exactly why Guz enjoys taunting and
+  humiliating Finethir now.
+
+  If the party sides with Finethir he treats them as enemies. If they show
+  the slightest sympathy — or admire the paintings — he is startled into
+  something close to friendliness.
+
+  He thinks Noke is a genius, and has been growing more protective of him
+  as Noke gets stranger. Let that show.
+
+stat_block:
+  ac: 13
+  hp: 22
+  hit_dice: 4d8 + 4
+  speed: 30 ft.
+  abilities:
+    STR: 16
+    DEX: 12
+    CON: 12
+    INT: 8
+    WIS: 11
+    CHA: 8
+  skills:
+    Intimidation: 2
+  senses: passive Perception 10
+  languages: Common, Orc
+  cr: 1/2
+  traits:
+    - name: Reckless
+      text: At the start of his turn, Guz can gain advantage on all melee
+        weapon attack rolls during that turn, but attack rolls against him
+        have advantage until the start of his next turn.
+    - name: Only Here for the Sheep
+      text: Guz is trying to capture Finethir, not kill the party. He drops
+        a character to 0 hit points rather than finishing them, and flees at
+        11 hit points or fewer.
+  actions:
+    - name: Whirling Greatsword
+      text: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit:
+        7 (1d10 + 2) slashing damage."
+  reactions: []

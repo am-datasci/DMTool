@@ -1,0 +1,54 @@
+title: Consequences
+
+read_aloud: |
+  Whatever happens next, it happens quickly, and then the room is quiet
+  again, and someone has to decide what to do about the sheep.
+
+dm_notes: |
+  Three endings. Pick whichever the dice and the party produced.
+
+  IF THE SPELL SUCCEEDS. Finethir congratulates the party at length. He has
+  to be reminded of anything he promised as a sheep, and cannot pay
+  anyway — Noke was virtually bankrupt and had sold most of his possessions
+  to fund research and guards. What Finethir can offer is real: he will
+  perform transmutations up to 5th level for them at cost, and he will take
+  in any polymorphed guards who fled and work on returning them to their
+  own shapes. Set finethir_restored.
+
+  IF THE SPELL FAILS. Finethir dies, permanently. The party may honour his
+  last wish and leave the place intact, or loot it. The tower holds little
+  for non-transmuters — lab equipment and arcane paraphernalia worth
+  perhaps 1,000gp. They may claim the whole complex if they want, which
+  will cause trouble when the local nobles come looking for Noke.
+
+  IF THEY REFUSE TO CAST IT. Finethir accepts it, without giving up hope.
+  He takes back his old home and starts looking for another way. He is
+  upset with them and says so, and also acknowledges that he owes them a
+  considerable debt. He heads for the bedroom and puts on one of his old
+  robes, which he wears from then on.
+
+  XP: 500 each for dealing with Noke. Note that this takes 1st-level
+  characters past 300 and straight to 2nd level — tell the players. Ending
+  a first session with a level-up is a good note to finish on.
+
+improv_notes: |
+  Ask each player what their character does now. It is their first session;
+  give them the last word on their own characters rather than narrating an
+  epilogue at them.
+
+  The polymorphed guards are the loose end most parties care about. Let
+  them resolve it. If Guz survived and Noke did not, he is adrift, and what
+  the party do about that is a better ending than any treasure.
+
+  If the wand survived, it is still cracked, still unreliable, and the DC
+  has gone up. That is a hook for another session if anyone wants one.
+
+npcs:
+  - finethir-shinebright
+  - guz
+
+monsters: []
+
+checks: []
+
+exits: []

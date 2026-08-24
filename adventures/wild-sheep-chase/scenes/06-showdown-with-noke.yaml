@@ -1,0 +1,89 @@
+title: Showdown with Noke
+
+read_aloud: |
+  The central platform smells of ink and something chemical underneath it.
+  Between the worktables stands a thin man with ink to the elbows and the
+  particular grey look of someone who has not slept properly in months. One
+  hand is closed around a short, cracked twig bound with a rune-scratched
+  iron band.
+
+  His eye twitches.
+
+  "Return the sheep," he says, "and in return I will not destroy you all."
+
+dm_notes: |
+  If nobody who escaped the first fight is present to identify the party,
+  and they have not arrived with weapons drawn, Noke will negotiate. He
+  reveals why he hates Finethir and boasts disjointedly about his own
+  work. He also asks whether they killed "my man, Guz," and is visibly
+  upset if they did.
+
+  If they refuse to hand the sheep over, he orders the attack.
+
+  THREE WAVES — RUN THEM SEPARATELY. This is the guide's most important
+  warning and the reason the finale is survivable at 1st level. Do not
+  overlap them; a party of four 1st-level characters cannot take two at
+  once.
+
+    Wave 1 — the guards. Two Transmuted Guards, plus Guz and the bear if
+    they fled the first fight. Noke stays back, casts Enlarge/Reduce on the
+    bear, keeps concentration, and plinks with Ray of Frost.
+
+    Wave 2 — the bed dragon. Once the guards are down or fled, Noke casts
+    Expeditious Retreat, flees to the bedroom and locks the door. Three
+    rounds later he bursts through the roof riding the Bed Dragon Wyrmling.
+    Give the party those three rounds to breathe, heal and reposition.
+
+    Wave 3 — optional, and probably not. When the dragon drops, Noke tries
+    the wand on himself. At 1st level, default to the wand fizzling and
+    turning him into inert goo — the party have already had two fights. Only
+    use the Gibbering Mouther if they are in good shape and want more.
+
+  Signpost the dragon's fire vulnerability. It is made of dry timber and
+  bedsheets; say so before anyone has to guess.
+
+improv_notes: |
+  Noke is not a monster until he chooses to be. Play the negotiation
+  honestly — some parties will talk him down, and that is a better ending
+  than killing him.
+
+  His question about Guz is the moment he becomes a person. Do not throw it
+  away.
+
+  If the party set the dragon on fire, be generous. It is exactly the kind
+  of thinking you want to reward at a first session, and you gave them
+  inspiration to encourage it.
+
+  If things go badly, Noke does not want a massacre — he wants the sheep.
+  A character at 0 hit points is a hostage, not a corpse.
+
+npcs:
+  - ahmed-noke
+  - guz
+  - finethir-shinebright
+
+monsters:
+  - transmuted-guard
+  - polymorphed-bear
+  - bed-dragon-wyrmling
+
+checks:
+  - name: Talk Noke down before the fight
+    ability: Charisma (Persuasion)
+    dc: 12
+    notes: Harder if anyone who fled the first fight is present to name
+      them. Sympathy about Finethir's treatment of him helps.
+  - name: Spot that the dragon is made of dry wood and cloth
+    ability: Intelligence (Nature)
+    dc: 10
+    notes: Offer this freely, or simply describe it. The fire vulnerability
+      should not be a secret.
+  - name: Catch Noke before he reaches the bedroom door
+    ability: Dexterity (Acrobatics)
+    dc: 12
+    notes: If they stop him, the bed dragon never appears and the fight
+      ends early. Let that happen — they earned it.
+
+exits:
+  - to: 07-big-choices
+    label: Noke is dealt with and the wand is in reach

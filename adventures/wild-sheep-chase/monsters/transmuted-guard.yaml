@@ -1,0 +1,44 @@
+# Noke's compound guards. The module uses three Apes (CR 1/2) wielding iron
+# greatswords, with their Fist attack replaced by a 10 (2d6+3) Slash.
+#
+# REBALANCED FOR 1ST LEVEL. Changes: three guards -> TWO, HP 19 -> 13,
+# attack +5 -> +3, damage 2d6+3 -> 1d8+2. They still flee below half
+# health, exactly as the module says, which is worth honouring: it teaches
+# new players that not every fight is to the death.
+
+name: Transmuted Guard
+summary: A man Noke turned into something ape-shaped, holding a greatsword
+  far too big for a person.
+
+combat_behavior: Fights intelligently and in coordination — these are
+  trained guards in borrowed bodies, not animals. Flees once reduced below
+  7 hit points. Will surrender rather than die if the party offer that.
+
+stat_block:
+  ac: 12
+  hp: 13
+  hit_dice: 2d8 + 4
+  speed: 30 ft., climb 30 ft.
+  abilities:
+    STR: 14
+    DEX: 12
+    CON: 14
+    INT: 8
+    WIS: 12
+    CHA: 7
+  skills:
+    Athletics: 4
+    Perception: 3
+  senses: passive Perception 13
+  languages: understands Common but cannot speak it
+  cr: 1/4
+  traits:
+    - name: A Person In There
+      text: Every guard here is a transmuted human. If the party work that
+        out, surrender and negotiation become real options — and Finethir
+        will object loudly to wasting time on it.
+  actions:
+    - name: Iron Greatsword
+      text: "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit:
+        6 (1d8 + 2) slashing damage."
+  reactions: []

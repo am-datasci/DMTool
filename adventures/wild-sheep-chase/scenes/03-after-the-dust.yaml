@@ -1,0 +1,72 @@
+title: After the Dust Settles
+
+read_aloud: |
+  The street is very quiet now, in the way streets are when everyone
+  sensible has gone indoors.
+
+  The sheep picks its way over to you, hooves clicking on the cobbles, and
+  looks up with an expression that would be dignified on something with
+  fewer chins.
+
+  "Well," says Finethir Shinebright. "That was them. There are rather a lot
+  more."
+
+dm_notes: |
+  Finethir pleads for help. Without it he is finished — Noke has plenty of
+  guards left and they will find him. If the party seem mercenary he
+  reminds them he is a wealthy and powerful wizard in his true form, and
+  promises great rewards. He is lying, and does not think of it as lying.
+
+  What he tells them:
+
+  - Until two years ago he owned a tower on the outskirts of town and
+    specialised in transmutation. His prized possession was a rare Wand of
+    True Polymorph.
+  - He came out of his meditative trance one night to find his apprentice,
+    Ahmed Noke, standing over him holding the wand. He demanded an
+    explanation and produced an angry "baaaaah".
+  - He spent two years a prisoner in his own garden, grazing on grass and
+    buttercups, watched by wolves and other beasts that were actually
+    polymorphed guards.
+  - Last night Noke left the door open. Finethir took a Scroll of Speak to
+    Animals from an old bookshelf and ran, looking for someone who could
+    read it.
+  - To change back he needs another dose of True Polymorph, which means the
+    wand.
+  - Noke still lives in Finethir's old home, south-east of town, and keeps
+    the wand on him at all times.
+  - He knows the layout intimately and will describe it in exhausting
+    detail if asked. Let him. It is genuinely useful and very in character.
+
+improv_notes: |
+  This is the scene where the party decide to go, so give them a reason
+  beyond payment. The polymorphed guards are the strongest hook — several
+  players will want to save the wolves and the bear once they realise there
+  are people in there.
+
+  Finethir will promise anything. If a player pins him down on specifics,
+  he agrees enthusiastically and immediately, which should be a small
+  warning sign.
+
+  If they ask why he did not simply go to the authorities: he is presumed
+  dead, he is a sheep, and he was never popular.
+
+npcs:
+  - finethir-shinebright
+
+monsters: []
+
+checks:
+  - name: Tell whether Finethir is being straight about the rewards
+    ability: Wisdom (Insight)
+    dc: 10
+    notes: A success makes it obvious he is promising far more than he can
+      deliver — he is not malicious about it, just used to being obeyed.
+  - name: Recall anything about the wizard Shinebright
+    ability: Intelligence (History)
+    dc: 12
+    notes: He was respected, prickly, and is widely believed to be dead.
+
+exits:
+  - to: 04-woodland-outpost
+    label: Set off for Noke's house

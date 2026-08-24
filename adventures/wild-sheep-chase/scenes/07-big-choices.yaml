@@ -1,0 +1,77 @@
+title: Big Choices
+
+read_aloud: |
+  The wand is a long, thin twig of oak, bound near the base with a bulbous
+  iron band covered in scratched runes. Fine cracks run the length of it.
+
+  It does not feel like a thing that wants to be picked up.
+
+dm_notes: |
+  Set wand_recovered when the party have it.
+
+  Anyone proficient in Arcana can tell at a glance that it has been
+  modified to be used more often, and that the modification has left it
+  unreliable. A closer look — DC 12 Intelligence (Arcana) — spells out how
+  bad it is. Set wand_inspected.
+
+  THE WAND, as modified: it holds 1d4-1 charges of True Polymorph, minimum
+  1, resetting at dawn. Using a charge requires an Intelligence (Arcana)
+  check. The printed module sets that at DC 17; this adaptation lowers it
+  to DC 15, following the guide's "the final Arcana check is still a DC15".
+
+    Success: the spell works, and the DC to use it permanently rises by 1.
+    Fail by 5 or less: the target becomes a Gibbering Mouther. This cannot
+      be undone by anything below a 9th-level spell.
+    Fail by more than 5: as above, and the wand explodes, dealing 1d12
+      force damage to everything within 10 feet per remaining charge, and
+      is destroyed.
+
+  If the party want to talk to Finethir, a search of the central platform
+  turns up another Scroll of Speak with Animals.
+
+  Finethir will take the risk. He wants to be an elf again and is willing
+  to die for it. He is open to being talked out of it — a compelling
+  argument and a DC 15 Charisma (Persuasion).
+
+  Before anyone casts, he asks that if he dies, the party send word to his
+  old college.
+
+improv_notes: |
+  This is the climax, and it is a dice roll, so build to it properly. Say
+  the DC out loud. Ask who is making the check. Let the table discuss.
+
+  This is what the early inspiration was for. Remind whoever has it that
+  they have it — new players forget.
+
+  If Finethir sees Noke's body, give him a moment of realising how badly he
+  treated the boy. He will not say so directly. He will just go quiet, and
+  then be brisk about something else.
+
+  Whatever happens on that roll, it is the ending. Do not soften a failure
+  and do not undercut a success.
+
+npcs:
+  - finethir-shinebright
+
+monsters: []
+
+checks:
+  - name: Inspect the wand
+    ability: Intelligence (Arcana)
+    dc: 12
+    notes: Reveals that the modifications have left it extremely
+      unreliable, and what happens when it goes wrong. Set wand_inspected.
+  - name: Use a charge of the wand
+    ability: Intelligence (Arcana)
+    dc: 15
+    notes: THE roll of the session. Lowered from the module's DC 17 for
+      1st-level play. Success restores Finethir; failure by 5 or less turns
+      him into a Gibbering Mouther; by more than 5, the wand also explodes.
+  - name: Talk Finethir out of risking it
+    ability: Charisma (Persuasion)
+    dc: 15
+    notes: Needs a genuinely compelling argument as well as the roll.
+
+exits:
+  - to: 08-consequences
+    label: The wand is used, or refused

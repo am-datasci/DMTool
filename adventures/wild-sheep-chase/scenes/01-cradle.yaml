@@ -1,0 +1,72 @@
+title: An Afternoon in Cradle
+
+read_aloud: |
+  Cradle is the sort of village that looks like it was arranged rather than
+  built: whitewashed houses on the cliffs, gulls arguing over the harbour,
+  and in the square an exquisite marble statue of a witch caught
+  mid-shrug.
+
+  You have an afternoon with nothing in it. No one is paying you. Nothing
+  is on fire.
+
+  Then there is a clatter of hooves, a few surprised yelps, and a frantic
+  bleating — and a sheep comes barrelling round the corner straight at you.
+  Fluffy white coat, black face, curled horns, a small bell at its throat,
+  and an elaborate scroll clenched in its teeth.
+
+dm_notes: |
+  Ask the players where in Cradle they want to start — the pub, the beach
+  and the boutique are the usual answers. Spend a few minutes on an
+  ordinary merchant or innkeeper first so everyone gets one low-stakes
+  roleplay beat before anything happens.
+
+  The sheep is Finethir Shinebright. He makes for the most obviously
+  magical member of the party and waves the scroll at them, letting anyone
+  who reaches for it take it.
+
+  The wax seal reads "Scroll of Speak With Animals (Modified)". If anyone
+  says that out loud, the sheep nods and bleats enthusiastically. Reading
+  it aloud is enough to cast it — set the flag scroll_read.
+
+  Once it takes effect, the bleating becomes cultured, elven-accented
+  Common with a faint bleat under it. He introduces himself as Finethir
+  Shinebright, a wizard in dire need of aid, and asks the party to help him
+  take back an extremely powerful artefact from a dangerous and possibly
+  insane wizard.
+
+  He gets a little way into the story before howling starts.
+
+improv_notes: |
+  Somewhere in this scene, ask the players to pick a team name together.
+  Give them a minute. If they cannot agree, have a passing NPC — the
+  innkeeper, the merchant, anyone — name them, and let it stick. It costs
+  nothing and it makes four strangers into a party.
+
+  Hand out inspiration early and visibly to whoever does something
+  creative. Say what you are rewarding. It encourages exactly the play you
+  want, and it stacks the odds for the Arcana check at the end, which is
+  the roll the whole session hangs on.
+
+  If nobody reaches for the scroll, the sheep gets more insistent, then
+  starts nudging people. He is not subtle. He is also a sheep, so there is
+  a limit to how well he can explain himself.
+
+npcs:
+  - finethir-shinebright
+
+monsters: []
+
+checks:
+  - name: Notice the sheep is carrying real magic, not a prop
+    ability: Intelligence (Arcana)
+    dc: 10
+    notes: A success spots the scroll's aura before anyone touches it.
+  - name: Calm the panicking sheep enough to get the scroll
+    ability: Wisdom (Animal Handling)
+    dc: 10
+    notes: Not required — he gives it up willingly to anyone who reaches.
+      Offer it only if a player wants to try something.
+
+exits:
+  - to: 02-shepherds-crooks
+    label: The howling gets closer — Guz arrives

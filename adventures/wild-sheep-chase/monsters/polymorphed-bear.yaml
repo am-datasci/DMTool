@@ -1,0 +1,46 @@
+# The "hulking figure in a dirty brown cloak" — a polymorphed guard.
+#
+# REBALANCED FOR 1ST LEVEL. The SRD brown bear is CR 1 with 34 hit points
+# and a multiattack averaging 11 damage a round; that is most of a
+# 1st-level character per turn.
+#
+# Changes: HP 34 -> 15, AC 11, multiattack dropped to a single bite,
+# damage reduced. It enters on round 2, not round 1 — the cloak coming off
+# mid-fight is the scene's best beat and it also staggers the damage.
+
+name: Polymorphed Brown Bear
+summary: A bear in a cloak. Nobody notices until the hood comes off.
+
+combat_behavior: Holds back on round 1, hooded, while Guz talks. Joins on
+  round 2 with a roar as the cloak falls. Fights alongside Guz against
+  whoever is nearest, and flees with him at half health (7 hit points or
+  fewer) — set bear_fled if it escapes.
+
+stat_block:
+  ac: 11
+  hp: 15
+  hit_dice: 2d10 + 4
+  speed: 40 ft., climb 30 ft.
+  abilities:
+    STR: 15
+    DEX: 10
+    CON: 14
+    INT: 3
+    WIS: 12
+    CHA: 7
+  skills:
+    Perception: 3
+  senses: passive Perception 13
+  languages: —
+  cr: 1/4
+  traits:
+    - name: Keen Smell
+      text: Advantage on Wisdom (Perception) checks that rely on smell.
+    - name: A Person In There
+      text: Another of Noke's transmuted guards. It acts with human
+        intelligence and would very much like to stop being a bear.
+  actions:
+    - name: Bite
+      text: "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit:
+        6 (1d8 + 2) piercing damage."
+  reactions: []

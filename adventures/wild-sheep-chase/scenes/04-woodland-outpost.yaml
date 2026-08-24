@@ -1,0 +1,72 @@
+# This scene is not in the printed module. It comes from the how-to-run
+# guide, which recommends inserting a beat between the two fights to
+# signpost the finale and give the party a breather.
+
+title: The Half-Built Outpost
+
+read_aloud: |
+  The path leaves the main road a few miles out of town, ducking through a
+  gap in the bushes and winding off between tall oaks. The tracks in the
+  mud are fresh — a lot of feet, and a lot of paws.
+
+  About a mile in, something breaks the pattern of the trees: a
+  half-constructed outpost, timber frame up, roof never started. Nobody has
+  worked on it in a while.
+
+  There is a smell.
+
+dm_notes: |
+  This is the guide's "middle bit" — a breather between two fights, a place
+  to foreshadow the wand, and where the party can pick up a healing potion
+  before the finale.
+
+  Searching the outpost turns up a pile of black goo with a suggestion of
+  ribs and organs through it. It is a failed transmutation. Finethir, if
+  asked, goes quiet and then says that Noke has been tinkering with the
+  wand, and that it should not be able to do this.
+
+  This is the only warning the party get about the wand before they use it.
+  Make sure they get it.
+
+  A second search finds a workman's satchel with a potion of healing in it
+  — set potion_found. Hand this out generously. New players play cautiously
+  and take proportionally more damage for it, and the potion is there to
+  offset that rather than to be a reward for good rolling.
+
+improv_notes: |
+  The guide suggests this is a good place for a skill challenge or a puzzle
+  of your own devising, and it is — the party are between two fights, the
+  stakes are clear, and nothing here is load-bearing. Build whatever suits
+  your table, or skip straight through if the session is running long.
+
+  The goo is the emotional beat, not the mechanics. Let it sit. Someone
+  will ask whether it used to be a person. The honest answer is that
+  Finethir does not know.
+
+  If the party are hurt and did not find the potion, be generous with a
+  second look. This scene exists to keep them alive.
+
+npcs:
+  - finethir-shinebright
+
+monsters: []
+
+checks:
+  - name: Search the outpost
+    ability: Intelligence (Investigation)
+    dc: 10
+    notes: Finds the failed transmutation — the black goo with ribs
+      through it. This is the wand warning; do not let it be missed.
+  - name: Search the workmen's belongings
+    ability: Intelligence (Investigation)
+    dc: 10
+    notes: Finds a potion of healing. Set potion_found.
+  - name: Work out what the goo used to be
+    ability: Intelligence (Arcana)
+    dc: 12
+    notes: A failed True Polymorph. Whatever it was, the spell did not
+      finish.
+
+exits:
+  - to: 05-house-in-the-woods
+    label: Carry on toward Noke's house

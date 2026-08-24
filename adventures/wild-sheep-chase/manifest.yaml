@@ -1,0 +1,21 @@
+# A Wild Sheep Chase — adapted for 1st-level play.
+#
+# SOURCE AND COPYRIGHT
+# Transcribed from "A Wild Sheep Chase" by Richard Jansen-Parkes
+# (Winghorn Press), published under the DMs Guild Community Content
+# Agreement. This is a personal transcription for one table's use. It is
+# NOT open content and must not be redistributed or published — keep this
+# repository private. See the SRD content under rules/ for the material
+# that *is* freely licensed.
+#
+# The 1st-level adaptations follow "How to run A Wild Sheep Chase" by
+# Matthew Perkins (reference/how-to-run-wild-sheep-chase.md), plus
+# encounter maths recorded in each monster file.
+
+title: A Wild Sheep Chase
+slug: wild-sheep-chase
+ruleset: srd-5.1
+summary: A polymorphed wizard needs his wand back from the apprentice who
+  stole it. Written for 4th-5th level; rebalanced here for 1st.
+level_range: 1st level, party of four
+start_scene: 01-cradle

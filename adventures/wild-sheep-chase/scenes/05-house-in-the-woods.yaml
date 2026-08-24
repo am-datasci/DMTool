@@ -1,0 +1,85 @@
+title: The House in the Woods
+
+read_aloud: |
+  The trees thin, and the house is suddenly above you.
+
+  It is not built of stone or glass but grown — four sturdy oaks shaped and
+  woven into three thick platforms. The lowest, about forty feet across,
+  sits ten feet up, ringed by curling branches with flowers and small trees
+  growing around its edge; a gentle slope of roots runs up to it from the
+  path.
+
+  The middle platform is the largest, sixty feet across and twenty feet up,
+  walled in twisting branches with window-sized gaps and a door facing the
+  garden.
+
+  The highest is small, thirty feet up, linked to the middle by another
+  slope.
+
+  Beneath it all sit two small wooden huts and a large outhouse.
+
+dm_notes: |
+  Two Transmuted Guards are on the lawn, dozing or playing with an
+  oversized pair of dice, iron greatswords stuck in the ground beside them.
+  A Polymorphed Brown Bear is in the outhouse, occupied.
+
+  If Guz and the bear escaped the first fight, they are here too — that is
+  what guz_fled and bear_fled are for. Do not run them at the same time as
+  the guards; see the showdown scene for the wave structure.
+
+  The door to the central platform is usually locked: DC 12 Strength
+  (Athletics) to force, or DC 12 with thieves' tools. Inside it divides into
+  a library-and-laboratory, a sitting room, and a kitchen. Untidy
+  bookshelves, worktables buried under ink-spattered notes and detailed
+  anatomical diagrams of assorted beasts.
+
+  The top platform is Noke's bedroom: a wardrobe, a cluttered dressing
+  table, and a large wooden bed. The bed matters.
+
+  The huts hold beds — a few oversized — and the ordinary clutter of the
+  men who sleep in them. One is Guz's studio, full of his terrible
+  paintings.
+
+improv_notes: |
+  There is a stealth adventure available here if the party want it. Let
+  them have it. Sneaking past the guards, or taking the wand while Noke
+  sleeps, are both legitimate routes and the module says explicitly not to
+  force things back toward the fight.
+
+  Guz's paintings are worth describing in loving detail. They are awful.
+  Players who find them and are kind about them have a lever on Guz that
+  nothing else in the adventure provides.
+
+  The guards are people. Anyone who works that out can try talking, and
+  that should work at least partly — they did not choose this. Finethir
+  will be extremely impatient about the delay.
+
+npcs:
+  - finethir-shinebright
+  - guz
+
+monsters:
+  - transmuted-guard
+  - polymorphed-bear
+
+checks:
+  - name: Approach unseen across the lawn
+    ability: Dexterity (Stealth)
+    dc: 12
+    notes: Contested by the guards' passive Perception 13 if you prefer to
+      run it that way.
+  - name: Force the door to the central platform
+    ability: Strength (Athletics)
+    dc: 12
+  - name: Pick the lock on the central platform
+    ability: Dexterity with thieves' tools
+    dc: 12
+  - name: Read the notes in the laboratory
+    ability: Intelligence (Arcana)
+    dc: 12
+    notes: Noke has been trying and failing to make the wand safe. The
+      diagrams are of the guards.
+
+exits:
+  - to: 06-showdown-with-noke
+    label: Noke becomes aware of them, or they go looking for him

@@ -1,0 +1,60 @@
+# Noke's bed, transmuted. The module's showpiece.
+#
+# REBALANCED FOR 1ST LEVEL — this is the most dangerous creature in the
+# adventure and needed the largest cut. As written it is CR 4: 75 hit
+# points, a bite averaging 15, and Splinter Breath dealing 24 (7d6) in a
+# 15-foot cone on a DC 13 save. An average 1st-level character has 8-12 hit
+# points. The breath weapon alone would kill the entire party outright.
+#
+# Changes: HP 75 -> 32, AC 16 -> 14, bite 2d10+4 -> 1d8+2,
+# Splinter Breath 7d6 -> 2d6 and DC 13 -> DC 11.
+#
+# Fire vulnerability is kept and should be signposted hard. It is a wooden
+# dragon; a torch is a real answer, and giving new players a visible
+# weakness to exploit is worth more than the damage numbers.
+
+name: Bed Dragon Wyrmling
+summary: A dragon carved from bedframe, with billowing bedsheets for wings
+  and a tail ending in a soft pillow.
+
+combat_behavior: Not intelligent. Uses Splinter Breath whenever it has
+  recharged, otherwise bites whatever is closest — except that it will
+  always prioritise anyone who has hurt it with fire. Noke rides it, using
+  Ray of Frost on anyone trying to flee. If Noke loses concentration or the
+  dragon drops, it reverts to a thoroughly beaten-up old bed.
+
+stat_block:
+  ac: 14
+  hp: 32
+  hit_dice: 5d10 + 5
+  speed: 30 ft., climb 30 ft., fly 30 ft.
+  abilities:
+    STR: 15
+    DEX: 14
+    CON: 13
+    INT: 8
+    WIS: 8
+    CHA: 4
+  skills:
+    Perception: 2
+    Stealth: 4
+  senses: passive Perception 12
+  languages: —
+  cr: 1
+  traits:
+    - name: Vulnerable to Fire
+      text: It is made of wood and bedding. Fire damage against it is
+        doubled. Signpost this — describe the dry timber and the sheets.
+    - name: Animated Furniture
+      text: If Noke loses concentration or the creature drops to 0 hit
+        points, it becomes a battered wooden bed again.
+  actions:
+    - name: Bite
+      text: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit:
+        6 (1d8 + 2) piercing damage."
+    - name: Splinter Breath (Recharge 5-6)
+      text: The dragon exhales wooden splinters in a 15-foot cone. Each
+        creature in that area must make a DC 11 Dexterity saving throw,
+        taking 7 (2d6) piercing damage on a failed save, or half as much on
+        a successful one.
+  reactions: []

@@ -1,0 +1,48 @@
+# A polymorphed guard wearing a wolf's shape and an iron collar.
+#
+# Standard SRD wolf statistics, unchanged — CR 1/4 is already right for
+# 1st-level play. The module fields THREE; this adaptation uses TWO,
+# because Pack Tactics scales viciously against low-hit-point characters.
+
+name: Collared Wolf
+summary: A wolf with an iron collar and unsettlingly intelligent eyes.
+
+combat_behavior: Circles wide rather than engaging the front line — the
+  wolves are trying to get behind the party and grab the sheep, not win the
+  fight. If one reaches Finethir it drags him toward Guz.
+
+stat_block:
+  ac: 13
+  hp: 11
+  hit_dice: 2d8 + 2
+  speed: 40 ft.
+  abilities:
+    STR: 12
+    DEX: 15
+    CON: 12
+    INT: 3
+    WIS: 12
+    CHA: 6
+  skills:
+    Perception: 3
+    Stealth: 4
+  senses: passive Perception 13
+  languages: —
+  cr: 1/4
+  traits:
+    - name: Keen Hearing and Smell
+      text: The wolf has advantage on Wisdom (Perception) checks that rely
+        on hearing or smell. This is why hiding the sheep never works.
+    - name: Pack Tactics
+      text: The wolf has advantage on an attack roll against a creature if
+        at least one of the wolf's allies is within 5 feet of the creature
+        and isn't incapacitated.
+    - name: A Person In There
+      text: There is a human mind inside. It acts intelligently, and it can
+        be reasoned with by anyone who realises what they are looking at.
+  actions:
+    - name: Bite
+      text: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit:
+        7 (2d4 + 2) piercing damage. If the target is a creature, it must
+        succeed on a DC 11 Strength saving throw or be knocked prone."
+  reactions: []

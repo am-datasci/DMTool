@@ -1,0 +1,63 @@
+# Contingency scene from the how-to-run guide, for the branch where the
+# party hand Finethir over. The printed module does not cover this.
+
+title: Noke Attacks Cradle
+
+read_aloud: |
+  It takes two days.
+
+  Then the shadow crosses the harbour — something enormous and wooden,
+  wings of billowing sheet, and a thin sleepless man riding it with a
+  cracked twig in his fist.
+
+  The first building comes down before anyone thinks to ring the bell.
+
+dm_notes: |
+  This is improvisation territory and the guide says so plainly. It exists
+  because the party made a real choice, not to punish them for it.
+
+  Noke arrives on the bed dragon and starts levelling buildings. He is not
+  hunting the party specifically — he is making a point about what happens
+  to people who inconvenience him.
+
+  Run it as a rescue rather than a fight if the party are hurt: getting
+  people out of collapsing buildings, with the dragon as a moving hazard
+  rather than an initiative slot.
+
+  If they do fight, use the Bed Dragon Wyrmling and Noke as written in
+  their files. Guz will be with him.
+
+  Finethir is somewhere in Noke's house, in a cage, still a sheep. Whether
+  the party go back for him is up to them.
+
+improv_notes: |
+  Do not signal that they took the wrong branch. They took a branch. This
+  is what was down it.
+
+  The guide's author notes he has never actually had players hand over the
+  sheep, so expect to be inventing most of this. Keep the stakes concrete
+  and local — named villagers from the opening scene are worth more here
+  than any amount of property damage.
+
+  If the party want to go back for Finethir afterwards, run the house
+  scenes as normal with the guards depleted.
+
+npcs:
+  - ahmed-noke
+  - guz
+
+monsters:
+  - bed-dragon-wyrmling
+  - transmuted-guard
+
+checks:
+  - name: Get civilians clear of a collapsing building
+    ability: Strength (Athletics)
+    dc: 10
+  - name: Spot where the dragon will strike next
+    ability: Wisdom (Perception)
+    dc: 12
+
+exits:
+  - to: 05-house-in-the-woods
+    label: Go back for the sheep once the dust settles

@@ -1,0 +1,86 @@
+title: Shepherds, Crooks
+
+read_aloud: |
+  A loud howling fills the air, mixed with angry yells and the occasional
+  scream, and all of it is getting closer.
+
+  The cause shoulders into view: a huge half-orc, pushing through the crowd
+  without much caring who is in the way. Ahead of him pad two large wolves
+  in iron collars. Behind him comes a hulking figure in a dirty brown
+  cloak, footfalls loud enough to hear over the noise.
+
+  The half-orc sets his small eyes on you and strides forward, one hand
+  resting on the hilt of a greatsword.
+
+  "That sheep is Master Noke's. He desires to have it back."
+
+dm_notes: |
+  Guz wants the sheep and will try talking first — demands, then bribes and
+  promises of magical favours. Any mention of Shinebright being a person
+  gets hollow, mirthless laughter.
+
+  He will not be talked out of it and cannot be fooled about the sheep's
+  location; the wolves know exactly where it is. If he stops making
+  progress, he attacks without warning.
+
+  ENCOUNTER (rebalanced for four 1st-level characters): Guz, two Collared
+  Wolves, and the cloaked figure — a Polymorphed Brown Bear that stays
+  hooded until round 2, then throws the cloak off with a roar.
+
+  Everyone here is trying to CAPTURE the sheep, not kill the party. Guz
+  drops characters to 0 rather than finishing them. The wolves ignore the
+  front line and circle for Finethir.
+
+  Guz and the bear flee at half health — set guz_fled and bear_fled. They
+  turn up again at Noke's house.
+
+  If a wolf reaches Finethir and drags him off, set sheep_taken. That is
+  not a failure state, it is the other branch.
+
+  Terrain matters and should be described: an inn gives overturned tables,
+  a street gives panicking bystanders as difficult terrain.
+
+improv_notes: |
+  This is probably the first fight these players have ever run. Slow down.
+  Say whose turn it is and what their options are. Describe positions out
+  loud rather than assuming everyone is tracking them.
+
+  New players tend to do cautious, non-aggressive things in combat —
+  searching, hiding, talking. Do not punish it. If someone spends a turn
+  rummaging behind the bar, let them find something useful.
+
+  Guz taunting Finethir is free comedy and tells the players a lot about
+  both of them. Use it.
+
+  If the party try to hand the sheep over, let them. Guz takes it and
+  leaves, and you are in the contingency — set sheep_taken.
+
+npcs:
+  - guz
+  - finethir-shinebright
+
+monsters:
+  - collared-wolf
+  - polymorphed-bear
+
+checks:
+  - name: Talk Guz out of it before violence starts
+    ability: Charisma (Persuasion)
+    dc: 12
+    notes: Cannot succeed outright — at best it buys a round and reveals
+      that Guz is following orders, not a grudge.
+  - name: Spot that the wolves are flanking toward the sheep
+    ability: Wisdom (Perception)
+    dc: 10
+  - name: Realise the cloaked figure is not a person
+    ability: Wisdom (Insight)
+    dc: 12
+    notes: On a success, the reveal in round 2 is not a surprise round.
+
+exits:
+  - to: 03-after-the-dust
+    label: Guz is beaten off and the party still have the sheep
+    unless: sheep_taken
+  - to: 09-noke-attacks-cradle
+    label: Guz got the sheep and left
+    condition: sheep_taken
